@@ -1,0 +1,11 @@
+{
+ "page": "apps/desktop/dist/index.html",
+ "url": null,
+ "root": "apps/desktop/dist",
+ "kind": "software",
+ "category": "ระบบขายหน้าร้านสหกรณ์",
+ "primary": "เข้าสู่ระบบ",
+ "rounds": 3,
+ "start": "2026-11-17T00:07:09.684Z",
+ "by": "gate.mjs --start"
+}

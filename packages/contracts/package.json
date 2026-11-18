@@ -1,0 +1,1 @@
+{"name":"@thepos/contracts","private":true,"type":"module","exports":{".":"./src/index.ts"},"scripts":{"typecheck":"tsc --noEmit"},"dependencies":{"zod":"^4.0.0"},"devDependencies":{"@thepos/config":"workspace:*"}}

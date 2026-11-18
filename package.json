@@ -1,0 +1,32 @@
+{
+  "name": "thepos",
+  "private": true,
+  "packageManager": "bun@1.3.11",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "pos": "bun scripts/pos-ctl.ts",
+    "start": "bun scripts/start-server.ts",
+    "start:server": "bun scripts/start-server.ts",
+    "dev:server": "bun run --cwd apps/server dev",
+    "dev:desktop": "bun run --cwd apps/desktop tauri dev",
+    "build:desktop": "bun run --cwd apps/desktop tauri build --no-bundle",
+    "build:installer": "bun run --cwd apps/desktop tauri build",
+    "build:inno": "bun run build:desktop && \"C:\\Program Files (x86)\\Inno Setup 6\\ISCC.exe\" infra\\installer\\thepos-desktop.iss",
+    "db:up": "docker compose -f infra/docker/docker-compose.dev.yml up -d --wait",
+    "db:generate": "bun run --cwd apps/server db:generate",
+    "db:migrate": "bun run --cwd apps/server db:migrate",
+    "db:seed": "bun run --cwd apps/server db:seed",
+    "typecheck": "bun run --filter '@thepos/*' typecheck",
+    "test": "vitest run",
+    "test:integration": "vitest run --config vitest.integration.config.ts"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.3.11",
+    "@types/node": "^22.0.0",
+    "typescript": "~5.9.3",
+    "vitest": "^4.0.0"
+  }
+}

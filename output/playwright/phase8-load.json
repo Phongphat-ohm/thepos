@@ -1,0 +1,26 @@
+{
+  "cashierCount": 5,
+  "catalogProducts": 3002,
+  "memberBills": 10000,
+  "elapsedSeconds": 647,
+  "lastUnitRace": {
+    "committed": 1,
+    "rejected": 4,
+    "replayedWithoutDuplicate": true
+  },
+  "lookup": {
+    "samples": 1000,
+    "p95Ms": 47.49
+  },
+  "checkout": {
+    "samples": 10000,
+    "p95Ms": 498.3
+  },
+  "reconciliation": {
+    "sales": "90500.00",
+    "dividend": "12.51",
+    "rebate": "1810.00",
+    "obligation": "1822.51",
+    "difference": "0.00"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "name": "@thepos/server",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "cd ../.. && bun scripts/start-server.ts",
+    "dev": "cd ../.. && bun --env-file=.env --watch apps/server/src/index.ts",
+    "db:generate": "bunx --bun prisma generate",
+    "db:migrate": "bun run --env-file=../../.env prisma migrate deploy",
+    "db:seed": "bun --env-file=../../.env prisma/seed.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@node-rs/argon2": "^2",
+    "@prisma/client": "6.19.3",
+    "@thepos/contracts": "workspace:*",
+    "hono": "^4.0.0",
+    "zod": "^4.0.0"
+  },
+  "devDependencies": {
+    "@thepos/config": "workspace:*",
+    "prisma": "6.19.3"
+  }
+}

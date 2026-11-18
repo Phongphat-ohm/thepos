@@ -1,0 +1,1 @@
+{"extends":"@thepos/config/tsconfig.json","include":["src"]}

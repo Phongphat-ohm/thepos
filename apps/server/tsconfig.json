@@ -1,0 +1,1 @@
+{"extends":"@thepos/config/tsconfig.json","compilerOptions":{"types":["bun","node"]},"include":["src","prisma/*.ts","test"]}

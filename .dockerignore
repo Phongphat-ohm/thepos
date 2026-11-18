@@ -1,0 +1,13 @@
+.agents
+.taste-skill
+.playwright-cli
+.git
+logs
+output
+node_modules
+**/node_modules
+**/target
+**/dist
+**/coverage
+.env*
+**/.env*

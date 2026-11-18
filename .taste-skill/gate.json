@@ -1,0 +1,468 @@
+{
+ "start": "2026-11-17T00:07:09.684Z",
+ "round": 2,
+ "idle": 0,
+ "errors": 0,
+ "status": "fail",
+ "history": [
+  {
+   "at": "2026-11-17T00:16:38.388Z",
+   "mode": "manual",
+   "status": "fail",
+   "fails": 20,
+   "round": 1,
+   "reused": false,
+   "stopHookActive": false
+  },
+  {
+   "at": "2026-11-17T00:19:38.833Z",
+   "mode": "manual",
+   "status": "fail",
+   "fails": 20,
+   "round": 1,
+   "reused": true,
+   "stopHookActive": false
+  },
+  {
+   "at": "2026-11-17T00:23:17.608Z",
+   "mode": "manual",
+   "status": "fail",
+   "fails": 11,
+   "round": 2,
+   "reused": false,
+   "stopHookActive": false
+  }
+ ],
+ "max": 3,
+ "marker": {
+  "page": "apps/desktop/dist/index.html",
+  "url": null,
+  "root": "apps/desktop/dist",
+  "kind": "software",
+  "category": "ระบบขายหน้าร้านสหกรณ์",
+  "primary": "เข้าสู่ระบบ",
+  "rounds": 3,
+  "start": "2026-11-17T00:07:09.684Z",
+  "by": "gate.mjs --start"
+ },
+ "manual": true,
+ "roundKey": "9462d86b5c816edf:da39a3ee",
+ "roundFree": false,
+ "idleFree": false,
+ "blockKey": null,
+ "fp": "9462d86b5c816edf",
+ "page": "apps/desktop/dist/index.html",
+ "found": {
+  "fails": [
+   {
+    "check": "copy-fact",
+    "where": "h1#title \"เชื่อมต่อระบบไม่ได้\"",
+    "msg": "the first screen holds no number, price, date, place, platform or genre",
+    "fix": "put one hard fact from the brief on the first screen: a number, a price, a date, the place, the platforms it runs on or a game's genre; take it from the brief or remove the claim",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "copy-fact"
+    ],
+    "wheres": [
+     "h1#title \"เชื่อมต่อระบบไม่ได้\""
+    ]
+   },
+   {
+    "check": "focus-ring",
+    "where": "div:where(.swal2-container) div:where(.swal2-popup):focus",
+    "msg": "\"div:where(.swal2-container) div:where(.swal2-popup):focus\" in the page removes the focus outline and sets nothing in its place",
+    "fix": "keep the kit's :focus-visible ring, or put a change of the same strength (a 2px line in --action) in the rule that removes it",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "focus-ring"
+    ],
+    "wheres": [
+     "div:where(.swal2-container) div:where(.swal2-popup):focus"
+    ]
+   },
+   {
+    "check": "moment-none",
+    "where": "(the page)",
+    "msg": "a software page (--type) deals no moment: every kind carries one, two on a long page (moments.md)",
+    "fix": "deal one (moments.mjs pick --page software) and mount it in its own section",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "moment-none"
+    ],
+    "wheres": [
+     "(the page)"
+    ]
+   },
+   {
+    "check": "hero-screen",
+    "where": "main#access-content > section.workspace.wrap \"ระบบหน้าร้านสหกรณ์เชื่อมต่อระบบไม่ได้ติด\"",
+    "msg": "the hero ends at 707px on a 900px screen, 193px above the fold: it ends at the fold, 1px either way (SR-1)",
+    "fix": "make the hero exactly one screen (height: 100svh, its content fitted inside), never taller or shorter",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "hero-screen"
+    ],
+    "wheres": [
+     "main#access-content > section.workspace.wrap \"ระบบหน้าร้านสหกรณ์เชื่อมต่อระบบไม่ได้ติด\""
+    ]
+   },
+   {
+    "check": "section-height",
+    "where": "main#access-content > section.workspace.wrap \"ระบบหน้าร้านสหกรณ์เชื่อมต่อระบบไม่ได้ติด\"",
+    "msg": "the section starts at 193px, 193px below the screen grid (0 x 900px): sections start on whole screens (SR-2)",
+    "fix": "make every section above it exactly one or two screens tall, so this one starts on a whole screen",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "section-height"
+    ],
+    "wheres": [
+     "main#access-content > section.workspace.wrap \"ระบบหน้าร้านสหกรณ์เชื่อมต่อระบบไม่ได้ติด\""
+    ]
+   },
+   {
+    "check": "container-edges",
+    "where": "main#access-content > section.workspace.wrap \"ระบบหน้าร้านสหกรณ์เชื่อมต่อระบบไม่ได้ติด\"",
+    "msg": "the content of section 1 runs 225px from the left and 225px from the right (read from its outermost blocks: no .wrap): the margin is 64-120px at 1440px (one container, equal margins, 2px either way) (SR-6)",
+    "fix": "use one container on every section and the nav (.wrap): one margin left and right, 64-120px on a desktop, 16-24px on a phone",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "container-edges"
+    ],
+    "wheres": [
+     "main#access-content > section.workspace.wrap \"ระบบหน้าร้านสหกรณ์เชื่อมต่อระบบไม่ได้ติด\""
+    ]
+   },
+   {
+    "check": "container-edges",
+    "where": "div#root \"ข้ามไปแบบฟอร์ม ระบบหน้าร้านสหกรณ์เชื่อมต\"",
+    "msg": "a <div> at the top of the page, outside header.nav, main, footer.closing and nav.actionbar (SR-6)",
+    "fix": "build the page as header.nav, a main of sections (each one in-flow .wrap plus background layers) and footer.closing",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "container-edges"
+    ],
+    "wheres": [
+     "div#root \"ข้ามไปแบบฟอร์ม ระบบหน้าร้านสหกรณ์เชื่อมต\""
+    ]
+   },
+   {
+    "check": "container-edges",
+    "where": "h1#title \"เชื่อมต่อระบบไม่ได้\"",
+    "msg": "1 text block starts on a left line at x 697, 472px from the container's left: text starts on the container's left, or on one split line (x 647, 732, 816) (SR-6)",
+    "fix": "start the text on the container's left, or on the one split line every split shares",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "container-edges"
+    ],
+    "wheres": [
+     "h1#title \"เชื่อมต่อระบบไม่ได้\""
+    ]
+   },
+   {
+    "check": "edge-left",
+    "where": "section.workspace.wrap h1 \"เชื่อมต่อระบบไม่ได้\"",
+    "msg": "starts at x 697; the lines are 224 and the column starts",
+    "fix": "start it on the .wrap left line",
+    "widths": [
+     1440
+    ],
+    "from": "layout",
+    "ids": [
+     "edge-left"
+    ],
+    "wheres": [
+     "section.workspace.wrap h1 \"เชื่อมต่อระบบไม่ได้\""
+    ]
+   },
+   {
+    "check": "screen-short",
+    "where": "section.workspace.wrap section.workspace.wrap \"ระบบหน้าร้านสหกรณ์เชื่อมต่อระบบไ\"",
+    "msg": "514px tall; one screen under the nav is 900px",
+    "fix": "make the section one full screen (--h: 1, layout-v4.md section 2)",
+    "widths": [
+     1440,
+     390
+    ],
+    "from": "layout",
+    "ids": [
+     "screen-short"
+    ],
+    "wheres": [
+     "section.workspace.wrap section.workspace.wrap \"ระบบหน้าร้านสหกรณ์เชื่อมต่อระบบไ\""
+    ]
+   },
+   {
+    "check": "hero-fold",
+    "where": "section.workspace.wrap section.workspace.wrap \"ระบบหน้าร้านสหกรณ์เชื่อมต่อระบบไ\"",
+    "msg": "starts at y 193, not under the nav",
+    "fix": "the hero fills the first screen alone, its button inside it",
+    "widths": [
+     1440,
+     390
+    ],
+    "from": "layout",
+    "ids": [
+     "hero-fold"
+    ],
+    "wheres": [
+     "section.workspace.wrap section.workspace.wrap \"ระบบหน้าร้านสหกรณ์เชื่อมต่อระบบไ\""
+    ]
+   }
+  ],
+  "warns": [
+   {
+    "check": "copy-headline",
+    "where": "h1#title \"เชื่อมต่อระบบไม่ได้\"",
+    "msg": "\"เชื่อมต่อระบบไม่ได้\": no category known to check it against (pass --category, or write the <title> as \"Name: what it is for whom\")",
+    "fix": "put the category noun in the h1 (and who it is for, or where), in 2 to 8 words",
+    "widths": [
+     1440
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "button-contrast",
+    "where": "section.workspace.wrap > div.access-form > div.form-actions > button.button.button-ghost \"เปลี่ยนที่อยู่เซิร์ฟเวอร์\"",
+    "msg": "the button \"เปลี่ยนที่อยู่เซิร์ฟเวอร์\" (#ffffff) stands only 1.00:1 off the ground around it: it reads as part of the ground, or as switched off",
+    "fix": "give the button a fill that stands at least 1.5:1 off what is around it, or an outline in the ink",
+    "widths": [
+     1440,
+     390
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "skip-link",
+    "where": "div#root > div.app-shell > a.skip-link \"ข้ามไปแบบฟอร์ม\"",
+    "msg": "the first Tab stop is \"ข้ามไปแบบฟอร์ม\", not a skip link: a keyboard user tabs through the whole nav on every visit",
+    "fix": "add the starter's skip link as the header's first child: <a class=\"skip-link\" href=\"#top\">Skip to content</a>",
+    "widths": [
+     1440
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "share-meta",
+    "where": "head",
+    "msg": "the head lacks og:title, og:description, og:image, twitter:card, an icon: a shared link shows no picture or title of its own",
+    "fix": "copy the head block of starter.html: og tags, twitter:card, the icon and theme-color (references/system.md, Head)",
+    "widths": [
+     1440
+    ],
+    "from": "consistency"
+   }
+  ],
+  "crashed": [],
+  "seconds": {
+   "consistency": 55,
+   "layout": 15
+  }
+ },
+ "open": [
+  {
+   "check": "copy-fact",
+   "where": "h1#title \"เชื่อมต่อระบบไม่ได้\"",
+   "msg": "the first screen holds no number, price, date, place, platform or genre",
+   "fix": "put one hard fact from the brief on the first screen: a number, a price, a date, the place, the platforms it runs on or a game's genre; take it from the brief or remove the claim",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "copy-fact"
+   ],
+   "wheres": [
+    "h1#title \"เชื่อมต่อระบบไม่ได้\""
+   ]
+  },
+  {
+   "check": "focus-ring",
+   "where": "div:where(.swal2-container) div:where(.swal2-popup):focus",
+   "msg": "\"div:where(.swal2-container) div:where(.swal2-popup):focus\" in the page removes the focus outline and sets nothing in its place",
+   "fix": "keep the kit's :focus-visible ring, or put a change of the same strength (a 2px line in --action) in the rule that removes it",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "focus-ring"
+   ],
+   "wheres": [
+    "div:where(.swal2-container) div:where(.swal2-popup):focus"
+   ]
+  },
+  {
+   "check": "moment-none",
+   "where": "(the page)",
+   "msg": "a software page (--type) deals no moment: every kind carries one, two on a long page (moments.md)",
+   "fix": "deal one (moments.mjs pick --page software) and mount it in its own section",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "moment-none"
+   ],
+   "wheres": [
+    "(the page)"
+   ]
+  },
+  {
+   "check": "hero-screen",
+   "where": "main#access-content > section.workspace.wrap \"ระบบหน้าร้านสหกรณ์เชื่อมต่อระบบไม่ได้ติด\"",
+   "msg": "the hero ends at 707px on a 900px screen, 193px above the fold: it ends at the fold, 1px either way (SR-1)",
+   "fix": "make the hero exactly one screen (height: 100svh, its content fitted inside), never taller or shorter",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "hero-screen"
+   ],
+   "wheres": [
+    "main#access-content > section.workspace.wrap \"ระบบหน้าร้านสหกรณ์เชื่อมต่อระบบไม่ได้ติด\""
+   ]
+  },
+  {
+   "check": "section-height",
+   "where": "main#access-content > section.workspace.wrap \"ระบบหน้าร้านสหกรณ์เชื่อมต่อระบบไม่ได้ติด\"",
+   "msg": "the section starts at 193px, 193px below the screen grid (0 x 900px): sections start on whole screens (SR-2)",
+   "fix": "make every section above it exactly one or two screens tall, so this one starts on a whole screen",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "section-height"
+   ],
+   "wheres": [
+    "main#access-content > section.workspace.wrap \"ระบบหน้าร้านสหกรณ์เชื่อมต่อระบบไม่ได้ติด\""
+   ]
+  },
+  {
+   "check": "container-edges",
+   "where": "main#access-content > section.workspace.wrap \"ระบบหน้าร้านสหกรณ์เชื่อมต่อระบบไม่ได้ติด\"",
+   "msg": "the content of section 1 runs 225px from the left and 225px from the right (read from its outermost blocks: no .wrap): the margin is 64-120px at 1440px (one container, equal margins, 2px either way) (SR-6)",
+   "fix": "use one container on every section and the nav (.wrap): one margin left and right, 64-120px on a desktop, 16-24px on a phone",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "container-edges"
+   ],
+   "wheres": [
+    "main#access-content > section.workspace.wrap \"ระบบหน้าร้านสหกรณ์เชื่อมต่อระบบไม่ได้ติด\""
+   ]
+  },
+  {
+   "check": "container-edges",
+   "where": "div#root \"ข้ามไปแบบฟอร์ม ระบบหน้าร้านสหกรณ์เชื่อมต\"",
+   "msg": "a <div> at the top of the page, outside header.nav, main, footer.closing and nav.actionbar (SR-6)",
+   "fix": "build the page as header.nav, a main of sections (each one in-flow .wrap plus background layers) and footer.closing",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "container-edges"
+   ],
+   "wheres": [
+    "div#root \"ข้ามไปแบบฟอร์ม ระบบหน้าร้านสหกรณ์เชื่อมต\""
+   ]
+  },
+  {
+   "check": "container-edges",
+   "where": "h1#title \"เชื่อมต่อระบบไม่ได้\"",
+   "msg": "1 text block starts on a left line at x 697, 472px from the container's left: text starts on the container's left, or on one split line (x 647, 732, 816) (SR-6)",
+   "fix": "start the text on the container's left, or on the one split line every split shares",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "container-edges"
+   ],
+   "wheres": [
+    "h1#title \"เชื่อมต่อระบบไม่ได้\""
+   ]
+  },
+  {
+   "check": "edge-left",
+   "where": "section.workspace.wrap h1 \"เชื่อมต่อระบบไม่ได้\"",
+   "msg": "starts at x 697; the lines are 224 and the column starts",
+   "fix": "start it on the .wrap left line",
+   "widths": [
+    1440
+   ],
+   "from": "layout",
+   "ids": [
+    "edge-left"
+   ],
+   "wheres": [
+    "section.workspace.wrap h1 \"เชื่อมต่อระบบไม่ได้\""
+   ]
+  },
+  {
+   "check": "screen-short",
+   "where": "section.workspace.wrap section.workspace.wrap \"ระบบหน้าร้านสหกรณ์เชื่อมต่อระบบไ\"",
+   "msg": "514px tall; one screen under the nav is 900px",
+   "fix": "make the section one full screen (--h: 1, layout-v4.md section 2)",
+   "widths": [
+    1440,
+    390
+   ],
+   "from": "layout",
+   "ids": [
+    "screen-short"
+   ],
+   "wheres": [
+    "section.workspace.wrap section.workspace.wrap \"ระบบหน้าร้านสหกรณ์เชื่อมต่อระบบไ\""
+   ]
+  },
+  {
+   "check": "hero-fold",
+   "where": "section.workspace.wrap section.workspace.wrap \"ระบบหน้าร้านสหกรณ์เชื่อมต่อระบบไ\"",
+   "msg": "starts at y 193, not under the nav",
+   "fix": "the hero fills the first screen alone, its button inside it",
+   "widths": [
+    1440,
+    390
+   ],
+   "from": "layout",
+   "ids": [
+    "hero-fold"
+   ],
+   "wheres": [
+    "section.workspace.wrap section.workspace.wrap \"ระบบหน้าร้านสหกรณ์เชื่อมต่อระบบไ\""
+   ]
+  }
+ ],
+ "waived": [],
+ "warnCount": 4,
+ "at": "2026-11-17T00:23:17.609Z"
+}

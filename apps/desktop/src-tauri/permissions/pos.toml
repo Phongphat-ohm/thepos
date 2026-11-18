@@ -1,0 +1,9 @@
+[[permission]]
+identifier = "allow-pos-request"
+description = "Permits the main window to call the fixed set of POS API operations."
+commands.allow = ["pos_request", "open_web"]
+
+[[permission]]
+identifier = "allow-receipt-printing"
+description = "Permits the local register to list Windows printer queues and submit receipt images."
+commands.allow = ["receipt_printers", "print_receipt"]

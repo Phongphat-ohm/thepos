@@ -1,0 +1,1 @@
+{"extends":"@thepos/config/tsconfig.json","compilerOptions":{"jsx":"react-jsx","lib":["ES2022","DOM","DOM.Iterable"],"types":["vite/client","node"],"paths":{"@/*":["./src/*"]}},"include":["src","vite.config.ts"]}

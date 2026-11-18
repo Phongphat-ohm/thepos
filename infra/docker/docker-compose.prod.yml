@@ -1,0 +1,98 @@
+services:
+  postgres:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-thepos}
+      POSTGRES_DB: ${POSTGRES_DB:-thepos}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    networks: [data]
+  migrate:
+    build:
+      context: ../..
+      dockerfile: infra/docker/Dockerfile
+    restart: "no"
+    command: ["sh", "-ec", "cd /app/apps/server && bunx --bun prisma migrate deploy && bun prisma/seed.ts"]
+    environment:
+      DATABASE_URL: ${MIGRATION_DATABASE_URL:-${DATABASE_URL:?Set MIGRATION_DATABASE_URL}}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks: [data]
+  api:
+    build:
+      context: ../..
+      dockerfile: infra/docker/Dockerfile
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: ${API_DATABASE_URL:-${DATABASE_URL:?Set API_DATABASE_URL}}
+      JWT_SECRET: ${JWT_SECRET:?Set JWT_SECRET}
+      BOOTSTRAP_SECRET: ${BOOTSTRAP_SECRET:?Set BOOTSTRAP_SECRET}
+      MEMBER_ENCRYPTION_KEY: ${MEMBER_ENCRYPTION_KEY:?Set MEMBER_ENCRYPTION_KEY}
+      CASH_VARIANCE_LIMIT: ${CASH_VARIANCE_LIMIT:-0.00}
+      TRUSTED_PROXY_IPS: ${TRUSTED_PROXY_IPS:-172.16.0.0/12,10.0.0.0/8,192.168.0.0/16,127.0.0.1,::1}
+      CORS_ORIGINS: ${CORS_ORIGINS:-}
+      SERVE_WEB_DIST: ${SERVE_WEB_DIST:-false}
+      SERVER_CONSOLE_CODE: ${SERVER_CONSOLE_CODE:-}
+      SERVER_CONNECT_SECRET: ${SERVER_CONNECT_SECRET:-}
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD", "bun", "-e", "const r = await fetch('http://127.0.0.1:3000/api/v1/health'); if (!r.ok || !(await r.json()).ready) process.exit(1)"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    networks: [web, data]
+  caddy:
+    image: caddy:2
+    restart: unless-stopped
+    environment:
+      POS_SITE: ${POS_SITE:?Set POS_SITE}
+    depends_on:
+      api:
+        condition: service_healthy
+    ports:
+      - "${HTTP_BIND:-80}:80"
+      - "${HTTPS_BIND:-443}:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    networks: [web]
+  backup:
+    build:
+      context: ../backup
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: ${BACKUP_DATABASE_URL:-${DATABASE_URL:?Set BACKUP_DATABASE_URL}}
+      BACKUP_RECIPIENT: ${BACKUP_RECIPIENT:?Set BACKUP_RECIPIENT}
+      BACKUP_INTERVAL_SECONDS: ${BACKUP_INTERVAL_SECONDS:-86400}
+      BACKUP_RETENTION_DAYS: ${BACKUP_RETENTION_DAYS:-30}
+    depends_on:
+      api:
+        condition: service_healthy
+    volumes:
+      - type: bind
+        source: ${BACKUP_PUBLIC_KEY_FILE:?Set BACKUP_PUBLIC_KEY_FILE}
+        target: /keys/recipient.asc
+        read_only: true
+      - type: bind
+        source: ${BACKUP_PATH:?Set BACKUP_PATH}
+        target: /backups
+    networks: [data]
+volumes:
+  postgres_data:
+  caddy_data:
+  caddy_config:
+networks:
+  web:
+  data:
+    internal: true
