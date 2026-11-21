@@ -2,7 +2,7 @@ import { afterAll, beforeAll, expect, it } from "vitest";
 import { reportKind, type CashShift, type Dashboard, type Report, type StoreSettings } from "@thepos/contracts";
 import { seedRoles } from "../prisma/roles";
 import { createApp } from "../src/app";
-import { newToken } from "../src/security";
+import { newToken } from "../src/core/security";
 import { isolatedDatabase } from "./isolated-db";
 
 const database = isolatedDatabase();
@@ -99,16 +99,28 @@ it("restricts store and receipt settings to administrators, validates VAT and au
   expect(publicDevices.items).toContainEqual({ id: newDevice.id, name: "จุดขายสำรอง", hasPin: true, inUse: false, activeUser: null });
 
   const rebindToken = newToken();
+  const noAdminBind = await app.request("/api/v1/devices/enroll", {
+    method: "POST",
+    headers: { "x-device-token": rebindToken, "content-type": "application/json" },
+    body: JSON.stringify({ deviceId: newDevice.id, pin: "223344" }),
+  });
+  expect(noAdminBind.status).toBe(400);
+  const nonAdminBind = await app.request("/api/v1/devices/enroll", {
+    method: "POST",
+    headers: { "x-device-token": rebindToken, "content-type": "application/json" },
+    body: JSON.stringify({ username: "cashier", password, deviceId: newDevice.id, pin: "223344" }),
+  });
+  expect(nonAdminBind.status).toBe(403);
   const wrongPinBind = await app.request("/api/v1/devices/enroll", {
     method: "POST",
     headers: { "x-device-token": rebindToken, "content-type": "application/json" },
-    body: JSON.stringify({ deviceId: newDevice.id, pin: "999999" }),
+    body: JSON.stringify({ username: "admin", password, deviceId: newDevice.id, pin: "999999" }),
   });
   expect(wrongPinBind.status).toBe(401);
   const validBind = await app.request("/api/v1/devices/enroll", {
     method: "POST",
     headers: { "x-device-token": rebindToken, "content-type": "application/json" },
-    body: JSON.stringify({ deviceId: newDevice.id, pin: "223344" }),
+    body: JSON.stringify({ username: "admin", password, deviceId: newDevice.id, pin: "223344" }),
   });
   expect(validBind.status).toBe(204);
   const boundStatus = await app.request("/api/v1/setup/status", { headers: { "x-device-token": rebindToken } });
@@ -124,7 +136,7 @@ it("restricts store and receipt settings to administrators, validates VAT and au
   const duplicateBindAttempt = await app.request("/api/v1/devices/enroll", {
     method: "POST",
     headers: { "x-device-token": newToken(), "content-type": "application/json" },
-    body: JSON.stringify({ deviceId: newDevice.id, pin: "223344" }),
+    body: JSON.stringify({ username: "admin", password, deviceId: newDevice.id, pin: "223344" }),
   });
   expect(duplicateBindAttempt.status).toBe(409);
   expect(await duplicateBindAttempt.json()).toEqual({ code: "DEVICE_IN_USE" });

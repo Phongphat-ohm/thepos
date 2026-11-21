@@ -1,5 +1,7 @@
 # PROJECT STRUCTURE & MONOREPO ARCHITECTURE
-## โครงสร้างโปรเจกต์และข้อกำหนดการจัดวางไฟล์
+## โครงสร้างโปรเจกต์แบบแยกระบบตามโดเมน (Domain-Separated Monorepo Layout)
+
+ทุกชั้นของระบบ (`packages/contracts`, `apps/server`, `packages/ui`, `apps/desktop/src-tauri`) ถูกจัดระเบียบโดย **แยกระบบของใครของมันไว้คนละโฟลเดอร์** เพื่อให้สามารถเปิดแก้ไขเฉพาะระบบที่ต้องการได้ทันทีโดยไม่ต้องไล่อ่านไฟล์อื่นทั้งโปรเจกต์
 
 ---
 
@@ -8,118 +10,123 @@
 ```text
 thepos/
 ├── apps/
-│   ├── desktop/                         # แอปพลิเคชันเดสก์ท็อปหน้าร้าน POS (Tauri 2 + React)
-│   │   ├── src/
-│   │   │   ├── app/                     # App Router, Layouts, Providers
-│   │   │   ├── features/
-│   │   │   │   ├── pos/                 # หน้าขายหลัก, แป้นพิมพ์ลัด, ตัวสแกนบาร์โค้ด
-│   │   │   │   ├── products/            # รายการสินค้า, การเพิ่ม/แก้ไข, หมวดหมู่
-│   │   │   │   ├── inventory/           # รับสินค้าเข้า, สต็อกล็อต, ตรวจนับสต็อก
-│   │   │   │   ├── members/             # ทะเบียนสมาชิก, บัญชีหุ้น, ประวัติยอดซื้อ
-│   │   │   │   ├── dividends/           # คำนวณเงินปันผล/เฉลี่ยคืน, อนุมัติ, จ่ายเงิน
-│   │   │   │   ├── shifts/              # เปิด-ปิดกะ, นับเงินสดในลิ้นชัก, กระทบยอด
-│   │   │   │   ├── reports/             # แดชบอร์ด, รายงานยอดขาย, กำไร, ส่งออก Excel/PDF
-│   │   │   │   ├── settings/            # ตั้งค่าร้านค้า, ฮาร์ดแวร์, ภาษี, ใบเสร็จ
-│   │   │   │   └── wizard/              # ตัวช่วยติดตั้งครั้งแรก (Setup Wizard)
-│   │   │   ├── components/
-│   │   │   │   ├── ui/                  # shadcn/ui primitives (Button, Dialog, Table ฯลฯ)
-│   │   │   │   └── common/              # คอมโพเนนต์ส่วนกลาง (Header, Modal, Toast)
-│   │   │   ├── hooks/                   # useKeyboardShortcuts, useBarcodeScanner, useCart
-│   │   │   ├── services/                # บริการเรียกใช้งาน API ฝั่งเซิร์ฟเวอร์
-│   │   │   ├── stores/                  # Zustand stores (useCartStore, useShiftStore)
-│   │   │   ├── lib/                     # ฟังก์ชันยูทิลิตี (ตัวแปลงเงิน, วันที่ภาษาไทย, เสียงเตือน)
-│   │   │   ├── i18n/                    # พจนานุกรมคำแปลภาษาไทยส่วนกลาง
-│   │   │   ├── styles/                  # Tailwind CSS, Theme variables (Light Mode)
-│   │   │   ├── App.tsx
-│   │   │   └── main.tsx
-│   │   ├── src-tauri/                   # Rust Backend สำหรับ Tauri 2
-│   │   │   ├── Cargo.toml
-│   │   │   ├── tauri.conf.json          # การกำหนดค่าสิทธิ์และความปลอดภัยของ Tauri
-│   │   │   └── src/
-│   │   │       ├── main.rs
-│   │   │       ├── hardware/            # ESC/POS Thermal Printer Adapter & Drawer
-│   │   │       └── security/            # Windows Credential Vault Integration
-│   │   ├── vite.config.ts
-│   │   ├── tsconfig.json
-│   │   └── package.json
+│   ├── server/                              # เซิร์ฟเวอร์กลาง (Bun + Hono + Prisma + PostgreSQL)
+│   │   ├── prisma/                          # schema.prisma, migrations, seed, roles
+│   │   ├── test/                            # Unit & Integration tests
+│   │   └── src/
+│   │       ├── index.ts                     # Server entrypoint (HTTP/HTTPS, static web, brand logo)
+│   │       ├── app.ts                       # Composition root (middleware + mount route ของแต่ละระบบ)
+│   │       ├── core/                        # โครงสร้างพื้นฐานกลางของเซิร์ฟเวอร์ (ไม่ใช่ business domain)
+│   │       │   ├── errors.ts                # ApiError
+│   │       │   ├── security.ts              # JWT, Argon2id, Token, IP/LAN/Proxy guards
+│   │       │   ├── server-security.ts       # Connect Key & Server Admin Console code
+│   │       │   ├── tls.ts                   # Self-signed HTTPS cert & LAN IP detection
+│   │       │   ├── http.ts                  # validate/body/uuid, rate limit, auth & cookie RouteContext
+│   │       │   ├── audit.ts                 # audit(), StoreActor, translateDuplicate()
+│   │       │   ├── pagination.ts            # pageMeta(), resolveOrder()
+│   │       │   ├── finance-lock.ts          # PostgreSQL advisory lock สำหรับงานบัญชี/การเงิน
+│   │       │   ├── date.ts                  # Decimal (40-digit), bangkokDay(), dayDate()
+│   │       │   └── approval.ts              # managerApproval(), lockSaleRequest()
+│   │       └── modules/                     # แยกระบบธุรกิจของใครของมัน (1 โฟลเดอร์ = 1 ระบบ)
+│   │           ├── auth/                    # service.ts + routes.ts (Login/Lock/Unlock/Refresh/Password)
+│   │           ├── setup/                   # service.ts + routes.ts (Health/Bootstrap/Device Enroll)
+│   │           ├── server-admin/            # routes.ts (หน้าเว็บผู้ดูแลเซิร์ฟเวอร์ /server-admin)
+│   │           ├── catalog/                 # service.ts + import.service.ts + routes.ts (สินค้า/หมวดหมู่/ผู้จัดจำหน่าย/นำเข้า)
+│   │           ├── inventory/               # service.ts + routes.ts (รับสินค้าเข้า/ล็อต FEFO-FIFO/เคลื่อนไหวสต็อก)
+│   │           ├── stock-counts/            # service.ts + routes.ts (ใบตรวจนับสต็อกและการอนุมัติ)
+│   │           ├── mobile-stock-counts/     # service.ts + routes.ts (รอบนับสต๊อกผ่านมือถือในวง LAN)
+│   │           ├── sales/                   # sales.service.ts + drafts.service.ts + returns.service.ts + routes.ts
+│   │           ├── members/                 # service.ts + routes.ts (ทะเบียนสมาชิก/ยอดซื้อ/บัญชีหุ้น)
+│   │           ├── dividends/               # calculation.ts + service.ts + payouts.service.ts + routes.ts
+│   │           ├── shifts/                  # service.ts + routes.ts (กะเงินสด/ลิ้นชัก/กระทบยอด)
+│   │           ├── reports/                 # service.ts + routes.ts (แดชบอร์ด/รายงาน 14 ประเภท)
+│   │           └── settings/                # service.ts + routes.ts (ร้านค้า/พนักงาน/เครื่อง POS/Audit Log)
 │   │
-│   └── server/                          # บริการเซิร์ฟเวอร์ส่วนกลาง (Bun + Hono + Prisma)
-│       ├── src/
-│       │   ├── index.ts                 # Server Entrypoint
-│       │   ├── modules/                 # โดเมนเซอร์วิสและเร้าเตอร์ (Domain Modules)
-│       │   │   ├── auth/                # Login, PIN verification, Sessions, Devices
-│       │   │   ├── products/            # สินค้า, หลายบาร์โค้ด, แปลงหน่วยนับ
-│       │   │   ├── inventory/           # รับสินค้า, ล็อต FEFO/FIFO, ปรับปรุงสต็อก
-│       │   │   ├── sales/               # ขายหน้าร้าน, หักสต็อกแบบ Atomic, Idempotency
-│       │   │   ├── returns/             # คืนสินค้า, คืนสต็อกเข้าล็อต, ปรับยอดซื้อ
-│       │   │   ├── members/             # สมาชิก, สมุดบัญชียอดซื้อ (Purchase Ledger)
-│       │   │   ├── shares/              # บัญชีหุ้น, เพิ่ม/ลด/โอนหุ้น, ประวัติหุ้น
-│       │   │   ├── dividends/           # งวดบัญชี, กฎปันผล, คำนวณผล, ล็อกอนุมัติ
-│       │   │   ├── payouts/             # ภาระผูกพัน, จ่ายเงินสด/โอน, ติดตามคงค้าง
-│       │   │   ├── shifts/              # กะแคชเชียร์, เงินทอน, กระทบยอดเงินขาดเกิน
-│       │   │   ├── reports/             # สรุปยอดขาย, กำไรขั้นต้นตามล็อต, ส่งออกไฟล์
-│       │   │   ├── settings/            # ข้อมูลร้านค้า, ตั้งค่าภาษี, รูปแบบใบเสร็จ
-│       │   │   └── audit/               # บันทึกประวัติการแก้ไขที่ไม่สามารถเปลี่ยนแปลงได้
-│       │   ├── middleware/              # CORS, RateLimit, Auth, RBAC, Idempotency, Logging
-│       │   ├── lib/                     # Decimal helper, วันที่, รหัสข้อผิดพลาด
-│       │   └── prisma/
-│       │       ├── schema.prisma        # Schema ฐานข้อมูลอย่างสมบูรณ์
-│       │       └── migrations/          # สคริปต์ Migration ตามเวอร์ชัน
-│       ├── tsconfig.json
-│       └── package.json
+│   ├── desktop/                             # แอปเดสก์ท็อปหน้าร้าน POS (Tauri 2 + React shell)
+│   │   ├── src/main.tsx                     # Desktop entrypoint (ลงทะเบียน Tauri transport)
+│   │   └── src-tauri/src/
+│   │       ├── main.rs                      # Tauri builder & command handlers
+│   │       ├── api/                         # แยกส่วนเรียก API ของเครื่องเดสก์ท็อป
+│   │       │   ├── mod.rs                   # HTTP client, session refresh, execute()
+│   │       │   ├── routes.rs                # Command, BusinessRoute, BusinessQuery (จัดหมวดตามโดเมน)
+│   │       │   ├── url.rs                   # การตรวจสอบ Server URL + unit tests
+│   │       │   └── logo.rs                  # โหลดโลโก้ร้านค้า
+│   │       ├── hardware/printing.rs         # พิมพ์ใบเสร็จ ESC/POS / GDI & เปิดลิ้นชัก
+│   │       └── security/vault.rs            # Windows Credential Manager
+│   │
+│   └── web/                                 # เว็บพอร์ทัล (React shell ใช้ @thepos/ui ร่วมกับ desktop)
+│       └── src/main.tsx
 │
 ├── packages/
-│   ├── contracts/                       # สัญญา API ร่วม (Shared Zod Schemas & DTOs)
-│   │   ├── src/
-│   │   │   ├── auth.contract.ts
-│   │   │   ├── products.contract.ts
-│   │   │   ├── inventory.contract.ts
-│   │   │   ├── sales.contract.ts
-│   │   │   ├── members.contract.ts
-│   │   │   ├── dividends.contract.ts
-│   │   │   ├── shifts.contract.ts
-│   │   │   └── index.ts
-│   │   └── package.json
+│   ├── contracts/                           # Zod Schemas & DTOs แยกตามระบบ (re-export ผ่าน src/index.ts)
+│   │   └── src/
+│   │       ├── index.ts                     # Barrel export ทุกระบบ
+│   │       ├── shared/                      # primitives.ts, pagination.ts, permissions.ts, errors.ts
+│   │       ├── auth/index.ts
+│   │       ├── setup/index.ts
+│   │       ├── catalog/index.ts
+│   │       ├── inventory/index.ts
+│   │       ├── stock-counts/index.ts
+│   │       ├── mobile-stock-counts/index.ts
+│   │       ├── sales/index.ts
+│   │       ├── members/index.ts
+│   │       ├── dividends/index.ts
+│   │       ├── shifts/index.ts
+│   │       ├── reports/index.ts
+│   │       └── settings/index.ts
 │   │
-│   ├── shared/                          # ยูทิลิตีการคำนวณและค่าคงที่ส่วนกลาง
-│   │   ├── src/
-│   │   │   ├── decimal.ts               # เครื่องมือคำนวณ Decimal ป้องกัน Floating-Point
-│   │   │   ├── constants.ts             # Roles, Permissions, PaymentMethods, ShiftStatus
-│   │   │   ├── formatters.ts            # การจัดรูปแบบเงินบาทไทย และวันที่ พ.ศ.
-│   │   │   └── index.ts
-│   │   └── package.json
+│   ├── ui/                                  # ส่วนติดต่อผู้ใช้กลาง (@thepos/ui) ใช้ร่วมกันระหว่าง Desktop & Web
+│   │   └── src/
+│   │       ├── app.tsx                      # Root router & session lifecycle
+│   │       ├── styles.css                   # Entrypoint รวมไฟล์ CSS แยกหมวด
+│   │       ├── styles/                      # base, auth, shell, dashboard, components, stock, modal, pos, alerts, responsive, data-table
+│   │       ├── lib/
+│   │       │   ├── native.ts                # Barrel export สำหรับ API client
+│   │       │   ├── api/                     # errors.ts, routes.ts, web-transport.ts, client.ts
+│   │       │   ├── printing/                # types.ts, raster.ts, printing.ts, printing.test.ts
+│   │       │   ├── format.ts                # thaiDate, today, printerDate, decimal, readStored, retryKey
+│   │       │   ├── alerts.ts                # SweetAlert2 wrappers
+│   │       │   ├── idle-lock.ts             # ล็อกหน้าจออัตโนมัติ
+│   │       │   └── utils.ts
+│   │       ├── components/
+│   │       │   ├── ui/                      # button.tsx, input.tsx, label.tsx, select.tsx
+│   │       │   ├── data-table/              # table.tsx (Table, Pagination, LoadMore, toggleSort)
+│   │       │   ├── common/                  # autocomplete, brand-logo, fields, loading, modal, pin, manager-approval, printer-dialog, receipt-view, web-access-modal
+│   │       │   └── layout/                  # app-shell.tsx, navigation.ts, change-password-modal.tsx
+│   │       └── features/                    # แยกระบบหน้าจอของใครของมัน (1 โฟลเดอร์ = 1 ระบบ)
+│   │           ├── auth/                    # access-panel, access-screen, wizard (เชื่อมต่อ/ลงทะเบียน/เข้าสู่ระบบ/ล็อก)
+│   │           ├── dashboard/               # home-page, store-dashboard
+│   │           ├── pos/                     # workspace, checkout-dialog, member-dialog, history, history-page, model
+│   │           ├── catalog/                 # workspace, catalog, suppliers, import-products, import-file, types
+│   │           ├── inventory/               # workspace, receive, stock-lots, stock-movements, product-filter, types
+│   │           ├── stock-counts/            # workspace, count-sheets
+│   │           ├── mobile-count/            # sessions-workspace (ฝั่งเดสก์ท็อป), mobile-count-app (ฝั่งมือถือ), barcode-scanner, mobile-count.css
+│   │           ├── members/                 # workspace, share-form
+│   │           ├── dividends/               # workspace, forms, payouts
+│   │           ├── shifts/                  # workspace
+│   │           ├── reports/                 # workspace, options, export
+│   │           └── settings/                # workspace, store-settings, hardware-settings, staff-settings, devices-settings, audit-logs
 │   │
-│   └── config/                          # การตั้งค่าเครื่องมือส่วนกลาง (ESLint, Prettier)
-│       ├── eslint.config.js
-│       ├── prettier.config.js
-│       └── tsconfig.base.json
+│   ├── shared/                              # ยูทิลิตีการคำนวณ Decimal ส่วนกลาง
+│   └── config/                              # การตั้งค่า TypeScript / ESLint / Prettier กลาง
 │
-├── infra/
-│   ├── docker/
-│   │   ├── docker-compose.prod.yml      # Caddy + Bun API + Postgres 16 Production Stack
-│   │   ├── docker-compose.dev.yml       # Local PostgreSQL Container สำหรับการพัฒนา
-│   │   ├── Dockerfile.server            # Multi-stage Dockerfile สำหรับ Bun Server
-│   │   └── Caddyfile                    # การตั้งค่า HTTPS Reverse Proxy อัตโนมัติ
-│   └── backup/
-│       ├── backup.sh                    # สคริปต์สำรองฐานข้อมูลพร้อมเข้ารหัส GPG
-│       └── restore.sh                   # สคริปต์กู้คืนฐานข้อมูลที่ผ่านการทดสอบจริง
-│
-├── docs/                                # เอกสารโครงการทั้งหมด (SRS, ERD, Roadmap ฯลฯ)
-├── package.json                         # Bun Root Workspace Configuration
-├── PROJECT_MASTER_SPEC.md               # ข้อกำหนดและระเบียบการสำหรับ AI ทุกตัว
-└── README.md                            # คู่มือแนะนำโครงการ
+├── infra/                                   # Docker, Caddy, Backup scripts, Windows Inno Setup installer
+├── scripts/                                 # pos-ctl.ts, start-server.ts
+└── docs/                                    # architecture, database, deployment, requirements, roadmap, security, testing, user-guides
 ```
 
 ---
 
-## 2. กฎการนำเข้าโมดูลข้ามแพ็กเกจ (Package Import Rules)
+## 2. กฎการนำเข้าโมดูลข้ามระบบ (Module Boundary Rules)
 
 1. **`@thepos/contracts`**:
-   - ใช้เป็น Single Source of Truth สำหรับ Data Transfer Objects (DTOs) และ Zod Validation Schemas
+   - แยกสคีมา Zod และ DTO ตามโฟลเดอร์ของแต่ละระบบ และ re-export รวมที่ `src/index.ts`
    - ห้ามมี Dependency ผูกกับฐานข้อมูลหรือ UI
-   - ทั้ง `apps/desktop` และ `apps/server` นำเข้าสัญญานี้ไปใช้งานร่วมกัน
-2. **`@thepos/shared`**:
-   - บรรจุฟังก์ชันการคำนวณ Decimal เลขคณิตแท้จริง และค่าคงที่ระบบ
-   - เป็น Pure TypeScript ไร้ Side-effect สามารถรันได้ทั้งบนเบราว์เซอร์, Node และ Bun
-3. **การแยกส่วนฮาร์ดแวร์**:
-   - คำสั่งที่เกี่ยวข้องกับเครื่องพิมพ์ใบเสร็จและลิ้นชักเก็บเงิน จะต้องเรียกผ่าน Tauri IPC Commands ไปยัง `src-tauri/hardware` เท่านั้น ห้ามเรียก API ของระบบปฏิบัติการโดยตรงจากฝั่ง React UI
+2. **Backend (`apps/server/src`)**:
+   - โค้ดส่วนกลาง (error, security, pagination, date, audit, lock, approval, HTTP context) อยู่ใน `core/`
+   - แต่ละระบบอยู่ใน `modules/<system>/` พร้อม `routes.ts` และ `service.ts` ของตัวเอง `app.ts` ทำหน้าที่ mount route เท่านั้น
+3. **Frontend (`packages/ui/src`)**:
+   - คอมโพเนนต์และยูทิลิตีที่ใช้ร่วมกันหลายระบบอยู่ใน `components/` และ `lib/`
+   - ห้าม feature หนึ่งนำเข้า utility ทั่วไปจากอีก feature หนึ่งโดยตรง
+4. **Desktop Hardware (`apps/desktop/src-tauri/src`)**:
+   - แยกชัดเจนเป็น `api/` (การสื่อสารกับเซิร์ฟเวอร์), `hardware/` (เครื่องพิมพ์/ลิ้นชัก), และ `security/` (Windows Credential Manager)

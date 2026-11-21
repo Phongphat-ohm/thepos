@@ -1,0 +1,39 @@
+[
+  {
+    "check": "Thai calendar range across month boundary",
+    "status": "PASS",
+    "evidence": [
+      "2026-10-30T17:00:00.000Z",
+      "2026-11-01T17:00:00.000Z"
+    ],
+    "level": "generated SQL parameters; database not executed"
+  },
+  {
+    "check": "Refund date independent of sale date",
+    "status": "PASS",
+    "level": "generated SQL inspection only"
+  },
+  {
+    "check": "Decimal regex in emitted Prisma SQL",
+    "status": "PASS",
+    "pattern": "^-?[0-9]+(\\.[0-9]+)?$",
+    "level": "JS pattern diagnostic; PostgreSQL execution unavailable"
+  },
+  {
+    "check": "Export preserves requested sorting",
+    "status": "DEFECT_CONFIRMED",
+    "pagedHasOrder": true,
+    "exportHasOrder": false,
+    "exportTail": "e),base_unit,ROUND(SUM(quantity),3)::text,ROUND(SUM(revenue),2)::text] cells\n        FROM events GROUP BY product_id,base_unit ORDER BY MAX(sku),MAX(name),base_unit) report_rows\n           LIMIT 10001",
+    "level": "actual service generated SQL"
+  },
+  {
+    "check": "Real permission function: sales/profit separation, web checkout and shift block, backoffice write allowed",
+    "status": "PASS",
+    "level": "function fixture; not authenticated integration"
+  },
+  {
+    "check": "Portal/server query validation parity for valid, reversed, overlong and invalid dates",
+    "status": "PASS"
+  }
+]

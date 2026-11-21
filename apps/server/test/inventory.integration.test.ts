@@ -3,8 +3,8 @@ import { createDecipheriv, randomBytes } from "node:crypto";
 import { sessionResponseSchema, type MemberProfile, type MemberShares, type SessionResponse, type ShareEntry, type Supplier } from "@thepos/contracts";
 import { seedRoles } from "../prisma/roles";
 import { createApp } from "../src/app";
-import { deductStock } from "../src/modules/inventory";
-import { newToken } from "../src/security";
+import { deductStock } from "../src/modules/inventory/service";
+import { newToken } from "../src/core/security";
 import { isolatedDatabase } from "./isolated-db";
 
 const testDatabase = isolatedDatabase();

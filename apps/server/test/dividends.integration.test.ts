@@ -2,7 +2,7 @@ import { afterAll, beforeAll, expect, it } from "vitest";
 import type { AccountingPeriod, DividendPreview, DividendRule, Page, PayoutObligation, PayoutReceipt, SessionResponse } from "@thepos/contracts";
 import { seedRoles } from "../prisma/roles";
 import { createApp } from "../src/app";
-import { newToken } from "../src/security";
+import { newToken } from "../src/core/security";
 import { isolatedDatabase } from "./isolated-db";
 
 const database = isolatedDatabase();

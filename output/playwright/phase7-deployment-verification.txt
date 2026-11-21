@@ -1,3 +1,0 @@
-Verified against local production Compose with trusted Caddy TLS CA.
-Compared row counts and content hashes for 48 PostgreSQL tables after GPG decryption and restore.
-Encrypted archives present: 9.

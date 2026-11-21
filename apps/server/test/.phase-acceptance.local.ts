@@ -1,7 +1,7 @@
 import { isolatedDatabase } from "./isolated-db";
 import { seedRoles } from "../prisma/roles";
 import { createApp } from "../src/app";
-import { newToken } from "../src/security";
+import { newToken } from "../src/core/security";
 
 const database = isolatedDatabase();
 const secret = newToken(), device = newToken(), password = "acceptance tests local only";

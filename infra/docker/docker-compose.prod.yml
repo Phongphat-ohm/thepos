@@ -19,6 +19,10 @@ services:
       context: ../..
       dockerfile: infra/docker/Dockerfile
     restart: "no"
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
     command: ["sh", "-ec", "cd /app/apps/server && bunx --bun prisma migrate deploy && bun prisma/seed.ts"]
     environment:
       DATABASE_URL: ${MIGRATION_DATABASE_URL:-${DATABASE_URL:?Set MIGRATION_DATABASE_URL}}
@@ -31,15 +35,24 @@ services:
       context: ../..
       dockerfile: infra/docker/Dockerfile
     restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    read_only: true
+    tmpfs:
+      - /tmp
     environment:
       DATABASE_URL: ${API_DATABASE_URL:-${DATABASE_URL:?Set API_DATABASE_URL}}
       JWT_SECRET: ${JWT_SECRET:?Set JWT_SECRET}
       BOOTSTRAP_SECRET: ${BOOTSTRAP_SECRET:?Set BOOTSTRAP_SECRET}
       MEMBER_ENCRYPTION_KEY: ${MEMBER_ENCRYPTION_KEY:?Set MEMBER_ENCRYPTION_KEY}
       CASH_VARIANCE_LIMIT: ${CASH_VARIANCE_LIMIT:-0.00}
-      TRUSTED_PROXY_IPS: ${TRUSTED_PROXY_IPS:-172.16.0.0/12,10.0.0.0/8,192.168.0.0/16,127.0.0.1,::1}
+      TRUSTED_PROXY_IPS: ${TRUSTED_PROXY_IPS:-172.28.0.0/24,127.0.0.1,::1}
       CORS_ORIGINS: ${CORS_ORIGINS:-}
       SERVE_WEB_DIST: ${SERVE_WEB_DIST:-false}
+      AUTO_HTTPS: ${AUTO_HTTPS:-false}
+      TLS_EXTRA_IPS: ${TLS_EXTRA_IPS:-}
       SERVER_CONSOLE_CODE: ${SERVER_CONSOLE_CODE:-}
       SERVER_CONNECT_SECRET: ${SERVER_CONNECT_SECRET:-}
     depends_on:
@@ -55,7 +68,7 @@ services:
     image: caddy:2
     restart: unless-stopped
     environment:
-      POS_SITE: ${POS_SITE:?Set POS_SITE}
+      POS_SITE: ${POS_SITE:-:443}
     depends_on:
       api:
         condition: service_healthy
@@ -63,7 +76,7 @@ services:
       - "${HTTP_BIND:-80}:80"
       - "${HTTPS_BIND:-443}:443"
     volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ${CADDY_FILE:-./Caddyfile}:/etc/caddy/Caddyfile:ro
       - caddy_data:/data
       - caddy_config:/config
     networks: [web]
@@ -71,6 +84,13 @@ services:
     build:
       context: ../backup
     restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    read_only: true
+    tmpfs:
+      - /tmp
     environment:
       DATABASE_URL: ${BACKUP_DATABASE_URL:-${DATABASE_URL:?Set BACKUP_DATABASE_URL}}
       BACKUP_RECIPIENT: ${BACKUP_RECIPIENT:?Set BACKUP_RECIPIENT}
@@ -94,5 +114,8 @@ volumes:
   caddy_config:
 networks:
   web:
+    ipam:
+      config:
+        - subnet: 172.28.0.0/24
   data:
     internal: true

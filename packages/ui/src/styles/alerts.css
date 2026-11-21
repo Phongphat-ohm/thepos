@@ -1,0 +1,20 @@
+/* SweetAlert2 Custom Theme */
+.thepos-swal-container { font-family: "Kanit", "Leelawadee UI", "Segoe UI", sans-serif !important; }
+.thepos-swal-popup {
+  border-radius: var(--radius-dialog) !important;
+  border: 1px solid var(--border) !important;
+  padding: 1.35rem !important;
+  color: var(--foreground) !important;
+}
+.thepos-swal-container .thepos-swal-popup:focus-visible { outline: 3px solid var(--focus); }
+.thepos-swal-title { font-size: 1.25rem !important; font-weight: 600 !important; color: var(--foreground) !important; }
+.thepos-swal-text { font-size: .95rem !important; color: var(--muted-foreground) !important; }
+.thepos-swal-confirm, .thepos-swal-cancel, .thepos-swal-danger { margin: .25rem !important; min-width: 6.5rem; }
+.thepos-swal-danger { background: var(--danger) !important; color: #fff !important; }
+.thepos-swal-danger:hover { background: var(--danger-hover) !important; }
+.thepos-swal-toast {
+  border-radius: .65rem !important;
+  border: 1px solid var(--border) !important;
+  box-shadow: 0 10px 25px rgb(15 23 42 / 14%) !important;
+}
+.thepos-swal-toast-title { font-size: .95rem !important; font-weight: 500 !important; }

@@ -1,6 +1,6 @@
 import { expect, it } from "vitest";
-import { nextFailure } from "../src/modules/auth";
-import { hashPassword, lockoutMs, verifyPassword } from "../src/security";
+import { nextFailure } from "../src/modules/auth/service";
+import { hashPassword, lockoutMs, verifyPassword } from "../src/core/security";
 
 it("hashes passwords and PINs with salted Argon2id", async () => {
   const pin = "012345";

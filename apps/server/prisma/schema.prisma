@@ -38,6 +38,7 @@ model Store {
   suppliers Supplier[]
   goodsReceipts GoodsReceipt[]
   stockCounts StockCount[]
+  stockCountSessions StockCountSession[]
   catalogImports CatalogImport[]
   sales Sale[]
   salesRequests SaleRequest[]
@@ -70,6 +71,8 @@ model User {
   auditLogs    AuditLog[]
   submittedCounts StockCount[] @relation("SubmittedCounts")
   reviewedCounts StockCount[] @relation("ReviewedCounts")
+  createdCountSessions StockCountSession[] @relation("CreatedCountSessions")
+  editedCountEntries StockCountEntry[] @relation("EditedCountEntries")
   sales Sale[]
   approvals ApprovalDecision[]
 
@@ -285,6 +288,7 @@ model StockLot {
   receivedAt        DateTime        @map("received_at") @db.Timestamptz(3)
   movements         StockMovement[]
   adjustments       StockAdjustment[]
+  countEntries      StockCountEntry[]
   saleAllocations    SaleItemLotAllocation[]
 
   @@index([productId, expirationDate, receivedAt, id])
@@ -327,10 +331,77 @@ model StockCount {
   idempotencyKey String @map("idempotency_key") @db.Uuid
   payloadHash String @map("payload_hash") @db.Char(64)
   adjustments StockAdjustment[]
+  session StockCountSession?
 
   @@unique([storeId, idempotencyKey])
   @@index([storeId, createdAt, id])
   @@map("stock_counts")
+}
+
+model StockCountSession {
+  id              String    @id @default(uuid()) @db.Uuid
+  storeId         String    @map("store_id") @db.Uuid
+  store           Store     @relation(fields: [storeId], references: [id])
+  createdById     String    @map("created_by_id") @db.Uuid
+  createdBy       User      @relation("CreatedCountSessions", fields: [createdById], references: [id])
+  title           String    @db.VarChar(200)
+  reason          String    @db.VarChar(400)
+  status          String    @default("OPEN") @db.VarChar(16)
+  joinCode        String    @unique @map("join_code") @db.VarChar(16)
+  showExpectedQty Boolean   @default(false) @map("show_expected_qty")
+  stockCountId    String?   @unique @map("stock_count_id") @db.Uuid
+  stockCount      StockCount? @relation(fields: [stockCountId], references: [id], onDelete: Restrict)
+  pausedAt        DateTime? @map("paused_at") @db.Timestamptz(3)
+  closedAt        DateTime? @map("closed_at") @db.Timestamptz(3)
+  createdAt       DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt       DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+  participants    StockCountParticipant[]
+  entries         StockCountEntry[]
+
+  @@index([storeId, status, createdAt])
+  @@index([storeId, createdAt, id])
+  @@map("stock_count_sessions")
+}
+
+model StockCountParticipant {
+  id          String            @id @default(uuid()) @db.Uuid
+  sessionId   String            @map("session_id") @db.Uuid
+  session     StockCountSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  displayName String            @map("display_name") @db.VarChar(80)
+  tokenHash   String            @unique @map("token_hash") @db.Char(64)
+  clientIp    String?           @map("client_ip") @db.VarChar(64)
+  userAgent   String?           @map("user_agent") @db.VarChar(255)
+  revokedAt   DateTime?         @map("revoked_at") @db.Timestamptz(3)
+  lastSeenAt  DateTime          @default(now()) @map("last_seen_at") @db.Timestamptz(3)
+  createdAt   DateTime          @default(now()) @map("created_at") @db.Timestamptz(3)
+  entries     StockCountEntry[]
+
+  @@index([sessionId, createdAt])
+  @@map("stock_count_participants")
+}
+
+model StockCountEntry {
+  id             String                 @id @default(uuid()) @db.Uuid
+  sessionId      String                 @map("session_id") @db.Uuid
+  session        StockCountSession      @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  lotId          String                 @map("lot_id") @db.Uuid
+  lot            StockLot               @relation(fields: [lotId], references: [id])
+  participantId  String?                @map("participant_id") @db.Uuid
+  participant    StockCountParticipant? @relation(fields: [participantId], references: [id], onDelete: SetNull)
+  editedByUserId String?                @map("edited_by_user_id") @db.Uuid
+  editedByUser   User?                  @relation("EditedCountEntries", fields: [editedByUserId], references: [id], onDelete: SetNull)
+  unitName       String                 @map("unit_name") @db.VarChar(50)
+  unitMultiplier Decimal                @map("unit_multiplier") @db.Decimal(12, 3)
+  inputQuantity  Decimal                @map("input_quantity") @db.Decimal(12, 3)
+  baseQuantity   Decimal                @map("base_quantity") @db.Decimal(12, 3)
+  note           String?                @db.VarChar(200)
+  createdAt      DateTime               @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt      DateTime               @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@index([sessionId, lotId])
+  @@index([sessionId, createdAt])
+  @@index([participantId, createdAt])
+  @@map("stock_count_entries")
 }
 
 model StockAdjustment {

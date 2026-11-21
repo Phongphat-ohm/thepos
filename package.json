@@ -8,9 +8,13 @@
   ],
   "scripts": {
     "pos": "bun scripts/pos-ctl.ts",
+    "dev": "bun scripts/dev-all.ts",
+    "app": "bun scripts/dev-all.ts --release",
     "start": "bun scripts/start-server.ts",
     "start:server": "bun scripts/start-server.ts",
     "dev:server": "bun run --cwd apps/server dev",
+    "dev:web": "bun run --cwd web-portal dev",
+    "build:web": "bun run --cwd web-portal build",
     "dev:desktop": "bun run --cwd apps/desktop tauri dev",
     "build:desktop": "bun run --cwd apps/desktop tauri build --no-bundle",
     "build:installer": "bun run --cwd apps/desktop tauri build",
@@ -19,7 +23,8 @@
     "db:generate": "bun run --cwd apps/server db:generate",
     "db:migrate": "bun run --cwd apps/server db:migrate",
     "db:seed": "bun run --cwd apps/server db:seed",
-    "typecheck": "bun run --filter '@thepos/*' typecheck",
+    "typecheck": "bun run --filter '@thepos/*' typecheck && bun run --cwd web-portal typecheck",
+    "typecheck:web": "bun run --cwd web-portal typecheck",
     "test": "vitest run",
     "test:integration": "vitest run --config vitest.integration.config.ts"
   },

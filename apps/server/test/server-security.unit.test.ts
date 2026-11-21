@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { isTrustedProxyIp } from "../src/security";
-import { createServerSecurity, timingSafeEqualText } from "../src/server-security";
+import { isTrustedProxyIp, resolveClientIp } from "../src/core/security";
+import { createServerSecurity, timingSafeEqualText } from "../src/core/server-security";
 
 describe("server security manager", () => {
   it("verifies console code and connect key in constant time and rotates tokens", () => {
@@ -34,6 +34,11 @@ describe("server security manager", () => {
     expect(security.verifyAdminSessionToken(adminCookie)).toBe(true);
     expect(security.verifyAdminSessionToken("tampered.token")).toBe(false);
 
+    const adminCookie2 = security.createAdminSessionToken();
+    expect(security.verifyAdminSessionToken(adminCookie2)).toBe(true);
+    security.revokeAdminSessionToken(adminCookie2);
+    expect(security.verifyAdminSessionToken(adminCookie2)).toBe(false);
+
     clock += 9 * 60 * 60 * 1000;
     expect(security.verifyAdminSessionToken(adminCookie)).toBe(false);
   });
@@ -50,5 +55,16 @@ describe("server security manager", () => {
     expect(isTrustedProxyIp("::1", trusted)).toBe(true);
     expect(isTrustedProxyIp("203.0.113.9", trusted)).toBe(false);
     expect(isTrustedProxyIp("192.168.1.5", ["*"])).toBe(true);
+  });
+
+  it("resolves client IP safely from right-to-left untrusted hops", () => {
+    const trusted = ["172.16.0.0/12", "127.0.0.1"];
+    const withXff = (value: string) => new Request("http://localhost/health", { headers: { "x-forwarded-for": value } });
+
+    expect(resolveClientIp(withXff("1.2.3.4"), undefined, trusted)).toBeUndefined();
+    expect(resolveClientIp(withXff("1.2.3.4"), "198.51.100.4", trusted)).toBe("198.51.100.4");
+    expect(resolveClientIp(new Request("http://localhost/health"), "172.18.0.5", trusted)).toBe("172.18.0.5");
+    expect(resolveClientIp(withXff("10.0.0.1, 203.0.113.45, 172.18.0.2"), "127.0.0.1", trusted)).toBe("203.0.113.45");
+    expect(resolveClientIp(withXff("172.18.0.2, 127.0.0.1"), "127.0.0.1", trusted)).toBe("127.0.0.1");
   });
 });

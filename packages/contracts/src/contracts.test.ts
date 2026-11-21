@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
-  auditEventLabels, bootstrapSchema, loginSchema, receiptInput, returnInput, returnQuoteInput,
-  setupStatusSchema, stockCountInput, tokenSchema, unlockSchema,
+  auditEventLabels, bindDeviceSchema, bootstrapSchema, loginSchema, receiptInput, returnInput, returnQuoteInput,
+  setupStatusSchema, stockCountInput, tokenSchema, unlockSchema, verifyAdminSchema,
 } from "./index";
 
 describe("authentication contracts", () => {
@@ -55,5 +55,15 @@ describe("authentication contracts", () => {
     expect(returnInput.safeParse({ ...quotePayload, expectedQuote: "" }).success).toBe(false);
     expect(returnInput.safeParse({ ...quotePayload, expectedQuote: "a".repeat(64) }).success).toBe(true);
     expect(auditEventLabels.SHIFT_FORCE_CLOSED).toBeTruthy();
+    expect(auditEventLabels.ADMIN_VERIFIED).toBeTruthy();
+  });
+
+  it("requires admin credentials when binding an existing POS device or verifying admin", () => {
+    const deviceId = "aaaaaaaa-bbbb-4ccc-8ddd-eeeeeeeeeeee";
+    expect(bindDeviceSchema.safeParse({ deviceId, pin: "123456" }).success).toBe(false);
+    expect(bindDeviceSchema.safeParse({
+      username: "admin", password: "secret-password", deviceId, pin: "123456",
+    }).success).toBe(true);
+    expect(verifyAdminSchema.safeParse({ username: "admin", password: "secret-password" }).success).toBe(true);
   });
 });

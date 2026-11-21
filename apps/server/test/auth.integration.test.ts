@@ -2,8 +2,8 @@ import { profileSchema, sessionResponseSchema } from "@thepos/contracts";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { seedRoles } from "../prisma/roles";
 import { createApp } from "../src/app";
-import { accessMs, digest, hashPassword, lockoutMs, newToken, sessionMs } from "../src/security";
-import { createServerSecurity } from "../src/server-security";
+import { accessMs, digest, hashPassword, lockoutMs, newToken, sessionMs } from "../src/core/security";
+import { createServerSecurity } from "../src/core/server-security";
 import { isolatedDatabase } from "./isolated-db";
 
 const testDatabase = isolatedDatabase();
@@ -98,7 +98,9 @@ describe.sequential("Phase 1 against PostgreSQL 16", () => {
       expect(session.profile.user.roles).toEqual([role]);
       expect(session.profile.permissions).toEqual(["session:use"]);
       expect((await call("devices/enroll", { device: newToken(), input: { ...enrollment, username } })).status).toBe(403);
+      expect((await call("setup/verify-admin", { device: deviceOne, input: { username, password } })).status).toBe(403);
     }
+    expect((await call("setup/verify-admin", { device: deviceOne, input: credentials })).status).toBe(200);
     const session = await login();
     expect(session.profile.user.roles).toEqual(["ADMIN"]);
     expect(session.profile.permissions).toContain("device:enroll");

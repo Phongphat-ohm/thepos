@@ -1,0 +1,15 @@
+{$POS_SITE::443} {
+    tls internal
+    encode zstd gzip
+
+    @admin path /server-admin*
+    handle @admin {
+        @blocked not remote_ip private_ranges 127.0.0.1 ::1
+        respond @blocked 403
+        reverse_proxy api:3000
+    }
+
+    handle {
+        reverse_proxy api:3000
+    }
+}

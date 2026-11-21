@@ -1,6 +1,10 @@
 {$POS_SITE} {
     encode zstd gzip
 
+    header {
+        Strict-Transport-Security "max-age=31536000; includeSubDomains"
+    }
+
     @admin path /server-admin*
     handle @admin {
         @blocked not remote_ip private_ranges 127.0.0.1 ::1

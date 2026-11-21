@@ -1,8 +1,9 @@
 #!/usr/bin/env bun
 import { execFileSync, execSync, spawn } from "node:child_process";
-import { closeSync, existsSync, mkdirSync, openSync, readFileSync, readSync, rmSync, statSync, unlinkSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, openSync, readFileSync, readSync, rmSync, statSync, unlinkSync, writeFileSync, closeSync } from "node:fs";
 import * as net from "node:net";
 import * as readline from "node:readline";
+import { detectLanIps } from "../apps/server/src/core/tls";
 
 // ==========================================
 // 🎨 Terminal Styling & Utilities
@@ -24,8 +25,10 @@ const c = {
 const LOGS_DIR = "logs";
 const SERVER_PID_FILE = `${LOGS_DIR}/server.pid`;
 const DESKTOP_PID_FILE = `${LOGS_DIR}/desktop.pid`;
+const WEB_PID_FILE = `${LOGS_DIR}/web.pid`;
 const SERVER_LOG_FILE = `${LOGS_DIR}/server.log`;
 const DESKTOP_LOG_FILE = `${LOGS_DIR}/desktop.log`;
+const WEB_LOG_FILE = `${LOGS_DIR}/web.log`;
 
 if (!existsSync(LOGS_DIR)) mkdirSync(LOGS_DIR, { recursive: true });
 
@@ -215,8 +218,10 @@ async function startServer(): Promise<boolean> {
     }
     const realPid = getPidOnPort(3000) ?? child.pid;
     writeFileSync(SERVER_PID_FILE, String(realPid));
+    const lanIp = detectLanIps()[0] ?? "127.0.0.1";
+    const httpsReady = await isPortOpen(3443);
     if (healthy) {
-      success(`API Server พร้อมทำงานแล้วที่ http://127.0.0.1:3000 (PID: ${realPid})`);
+      success(`API Server พร้อมทำงานแล้วที่ http://${lanIp}:3000${httpsReady ? ` และ https://${lanIp}:3443` : ""} (PID: ${realPid})`);
     } else {
       warn(`Server เริ่มต้นแล้ว (PID: ${realPid}) กำลังรอเชื่อมต่อ สามารถดู Log ได้ด้วย: thepos logs server`);
     }
@@ -294,6 +299,65 @@ function stopDesktop(): boolean {
   return true;
 }
 
+async function startWeb(): Promise<boolean> {
+  const existingPid = getPidOnPort(4173) ?? readStoredPid(WEB_PID_FILE);
+  if (existingPid && await isPortOpen(4173)) {
+    warn(`บริการหน้าเว็บ (Web Portal) กำลังทำงานอยู่แล้วที่พอร์ต 4173 (PID: ${existingPid})`);
+    return true;
+  }
+
+  info("กำลังเริ่มต้นบริการหน้าเว็บกลาง (Web Portal - web-portal)...");
+  const logStream = openSync(WEB_LOG_FILE, "a");
+  const child = spawn("cmd.exe", ["/c", "bun", "run", "--cwd", "web-portal", "dev"], {
+    detached: true,
+    stdio: ["ignore", logStream, logStream],
+    windowsHide: true,
+  });
+  closeSync(logStream);
+  child.unref();
+
+  if (child.pid) {
+    writeFileSync(WEB_PID_FILE, String(child.pid));
+    let ready = false;
+    for (let i = 0; i < 20; i++) {
+      await Bun.sleep(400);
+      if (await isPortOpen(4173)) {
+        ready = true;
+        break;
+      }
+    }
+    const realPid = getPidOnPort(4173) ?? child.pid;
+    writeFileSync(WEB_PID_FILE, String(realPid));
+    const lanIp = detectLanIps()[0] ?? "127.0.0.1";
+    if (ready) {
+      success(`บริการหน้าเว็บ (Web Portal) พร้อมใช้งานที่ http://${lanIp}:4173 (PID: ${realPid})`);
+    } else {
+      warn(`Web Portal เริ่มต้นแล้ว (PID: ${realPid}) กำลังรอเปิดพอร์ต 4173`);
+    }
+    return true;
+  }
+  error("ไม่สามารถเริ่ม Web Portal ได้");
+  return false;
+}
+
+function stopWeb(): boolean {
+  const portPid = getPidOnPort(4173);
+  const storedPid = readStoredPid(WEB_PID_FILE);
+  const targetPid = portPid ?? storedPid;
+
+  if (!targetPid) {
+    warn("บริการหน้าเว็บ (Web Portal) ไม่ได้ทำงานอยู่");
+    try { unlinkSync(WEB_PID_FILE); } catch {}
+    return true;
+  }
+
+  info(`กำลังหยุดบริการหน้าเว็บ (PID: ${targetPid})...`);
+  killProcessTree(targetPid);
+  try { unlinkSync(WEB_PID_FILE); } catch {}
+  success("หยุดบริการหน้าเว็บเรียบร้อยแล้ว");
+  return true;
+}
+
 async function startAll() {
   log(`\n${c.bold}${c.cyan}======================================================${c.reset}`);
   log(`${c.bold}${c.cyan}   🚀 กำลังเริ่มต้นระบบทั้งหมด (Start All Services)     ${c.reset}`);
@@ -304,7 +368,7 @@ async function startAll() {
   if (!sOk) return;
   await startDesktop();
   await printSetupHintIfNeeded();
-  log(`\n${c.green}${c.bold}✔ ระบบทั้งหมดถูกสั่งเริ่มทำงานเรียบร้อยแล้ว${c.reset}\n`);
+  log(`\n${c.green}${c.bold}✔ ระบบทั้งหมดถูกสั่งเริ่มทำงานเรียบร้อยแล้ว (DB + Server + Desktop)${c.reset}\n`);
 }
 
 async function stopAll() {
@@ -312,6 +376,9 @@ async function stopAll() {
   log(`${c.bold}${c.yellow}   🛑 กำลังหยุดการทำงานระบบทั้งหมด (Stop All Services) ${c.reset}`);
   log(`${c.bold}${c.yellow}======================================================${c.reset}\n`);
   stopDesktop();
+  if (getPidOnPort(4173) ?? readStoredPid(WEB_PID_FILE)) {
+    stopWeb();
+  }
   stopServer();
   stopDb();
   log(`\n${c.green}${c.bold}✔ บริการทั้งหมดถูกหยุดเรียบร้อยแล้ว${c.reset}\n`);
@@ -329,6 +396,11 @@ async function restartComponent(target: string) {
       stopServer();
       await Bun.sleep(1000);
       await startServer();
+      break;
+    case "web":
+      stopWeb();
+      await Bun.sleep(1000);
+      await startWeb();
       break;
     case "desktop":
       stopDesktop();
@@ -380,11 +452,29 @@ async function showStatus() {
     desktopDisplay = `${c.green}● กำลังทำงาน (PID: ${desktopPid})${c.reset}`;
   }
 
+  // Standalone Web Portal (web-portal)
+  const webPort = await isPortOpen(4173);
+  const webPid = getPidOnPort(4173) ?? readStoredPid(WEB_PID_FILE);
+  let webDisplay = `${c.gray}○ หยุดทำงาน (Not running)${c.reset}`;
+  if (webPort) {
+    webDisplay = `${c.green}● กำลังทำงาน (Port 4173${webPid ? ` - PID: ${webPid}` : ""})${c.reset}`;
+  }
+
+  const lanIp = detectLanIps()[0] ?? "127.0.0.1";
+  const httpsPort = await isPortOpen(3443);
+
   console.log(`  1. ฐานข้อมูล PostgreSQL:     ${dbDisplay}`);
-  console.log(`  2. Backend API & Web App:  ${serverDisplay}`);
-  console.log(`  3. แอปพลิเคชันเดสก์ท็อป POS:   ${desktopDisplay}`);
+  console.log(`  2. Backend API Server:     ${serverDisplay}`);
+  console.log(`  3. บริการหน้าเว็บ (Web):      ${webDisplay}`);
+  console.log(`  4. แอปพลิเคชันเดสก์ท็อป POS:   ${desktopDisplay}`);
   if (health.ready) {
-    console.log(`  4. เข้าใช้งานผ่าน Chrome:     ${c.cyan}http://127.0.0.1:3000${c.reset} ${desktopPid ? `(หรือ ${c.cyan}http://127.0.0.1:1420${c.reset})` : ""}`);
+    console.log(`  5. ลิงก์ LAN (HTTP):         ${c.cyan}http://${lanIp}:3000${c.reset}`);
+    if (httpsPort) {
+      console.log(`  6. ลิงก์ LAN (HTTPS มือถือ): ${c.cyan}https://${lanIp}:3443/stock-count${c.reset}`);
+    }
+    if (webPort) {
+      console.log(`  7. เว็บกลาง (Standalone):   ${c.cyan}http://${lanIp}:4173${c.reset}`);
+    }
     await printSetupHintIfNeeded();
   }
   console.log(`\n${c.gray}------------------------------------------------------${c.reset}\n`);
@@ -520,7 +610,7 @@ function viewLogs(target: string) {
     return;
   }
 
-  const logFile = chosen === "desktop" ? DESKTOP_LOG_FILE : SERVER_LOG_FILE;
+  const logFile = chosen === "desktop" ? DESKTOP_LOG_FILE : chosen === "web" ? WEB_LOG_FILE : SERVER_LOG_FILE;
   if (!existsSync(logFile)) {
     warn(`ยังไม่พบไฟล์ Log: ${logFile} (เริ่มบริการก่อนเพื่อเริ่มบันทึก Log)`);
     return;
@@ -680,7 +770,7 @@ async function resetSystem(force = false) {
 
   // 4. Wipe Logs
   info("4/6 กำลังล้างไฟล์ Log เก่า...");
-  for (const file of [SERVER_LOG_FILE, DESKTOP_LOG_FILE, SERVER_PID_FILE, DESKTOP_PID_FILE]) {
+  for (const file of [SERVER_LOG_FILE, DESKTOP_LOG_FILE, WEB_LOG_FILE, SERVER_PID_FILE, DESKTOP_PID_FILE, WEB_PID_FILE]) {
     if (existsSync(file)) {
       try { unlinkSync(file); } catch {}
     }
@@ -716,9 +806,9 @@ async function showInteractiveMenu() {
   log(`  ${c.cyan}[1]${c.reset} ตรวจสอบความพร้อมทั้งระบบ (Health Check & Doctor)`);
   log(`  ${c.cyan}[2]${c.reset} แสดงสถานะบริการทั้งหมด (Status Dashboard)`);
   log(`  ${c.green}[3]${c.reset} เริ่มต้นระบบทั้งหมด (Start All: DB + Server + Desktop)`);
-  log(`  ${c.green}[4]${c.reset} เริ่มต้นเฉพาะส่วน (Start: db / server / desktop)`);
-  log(`  ${c.magenta}[5]${c.reset} รีสตาร์ทเฉพาะส่วน (Restart: all / db / server / desktop)`);
-  log(`  ${c.yellow}[6]${c.reset} หยุดการทำงาน (Stop: all / db / server / desktop)`);
+  log(`  ${c.green}[4]${c.reset} เริ่มต้นเฉพาะส่วน (Start: db / server / web / desktop)`);
+  log(`  ${c.magenta}[5]${c.reset} รีสตาร์ทเฉพาะส่วน (Restart: all / db / server / web / desktop)`);
+  log(`  ${c.yellow}[6]${c.reset} หยุดการทำงาน (Stop: all / db / server / web / desktop)`);
   log(`  ${c.blue}[7]${c.reset} ดู Log แบบเรียลไทม์ (Live Logs)`);
   log(`  ${c.white}[8]${c.reset} รันชุดทดสอบทั้งหมด (Run All Tests)`);
   log(`  ${c.red}[9]${c.reset} รีเซ็ตระบบและล้างข้อมูลทั้งหมด (Factory Reset & Restart Fresh)`);
@@ -740,11 +830,12 @@ async function showInteractiveMenu() {
         break;
       case "4": {
         const sub = readline.createInterface({ input: process.stdin, output: process.stdout });
-        sub.question("เลือกบริการที่ต้องการเริ่ม (db / server / desktop): ", async (item) => {
+        sub.question("เลือกบริการที่ต้องการเริ่ม (db / server / web / desktop): ", async (item) => {
           sub.close();
           const target = item.trim().toLowerCase();
           if (target === "db") await startDb();
           else if (target === "server") await startServer();
+          else if (target === "web") await startWeb();
           else if (target === "desktop") await startDesktop();
           else warn("ไม่พบคำสั่งที่เลือก");
         });
@@ -752,7 +843,7 @@ async function showInteractiveMenu() {
       }
       case "5": {
         const sub = readline.createInterface({ input: process.stdin, output: process.stdout });
-        sub.question("เลือกบริการที่ต้องการรีสตาร์ท (all / db / server / desktop): ", async (item) => {
+        sub.question("เลือกบริการที่ต้องการรีสตาร์ท (all / db / server / web / desktop): ", async (item) => {
           sub.close();
           await restartComponent(item.trim());
         });
@@ -760,12 +851,13 @@ async function showInteractiveMenu() {
       }
       case "6": {
         const sub = readline.createInterface({ input: process.stdin, output: process.stdout });
-        sub.question("เลือกบริการที่ต้องการหยุด (all / db / server / desktop): ", async (item) => {
+        sub.question("เลือกบริการที่ต้องการหยุด (all / db / server / web / desktop): ", async (item) => {
           sub.close();
           const target = item.trim().toLowerCase();
           if (target === "all") await stopAll();
           else if (target === "db") stopDb();
           else if (target === "server") stopServer();
+          else if (target === "web") stopWeb();
           else if (target === "desktop") stopDesktop();
           else warn("ไม่พบคำสั่งที่เลือก");
         });
@@ -773,7 +865,7 @@ async function showInteractiveMenu() {
       }
       case "7": {
         const sub = readline.createInterface({ input: process.stdin, output: process.stdout });
-        sub.question("เลือก Log ที่ต้องการดู (all / server / desktop / db): ", (item) => {
+        sub.question("เลือก Log ที่ต้องการดู (all / server / web / desktop / db): ", (item) => {
           sub.close();
           viewLogs(item.trim() || "server");
         });
@@ -813,6 +905,7 @@ switch (action) {
     if (target === "all") await startAll();
     else if (target === "db") await startDb();
     else if (target === "server") await startServer();
+    else if (target === "web") await startWeb();
     else if (target === "desktop") await startDesktop();
     else warn(`ไม่รู้จักคำสั่งเริ่ม: ${target}`);
     break;
@@ -820,6 +913,7 @@ switch (action) {
     if (target === "all") await stopAll();
     else if (target === "db") stopDb();
     else if (target === "server") stopServer();
+    else if (target === "web") stopWeb();
     else if (target === "desktop") stopDesktop();
     else warn(`ไม่รู้จักคำสั่งหยุด: ${target}`);
     break;
@@ -846,10 +940,10 @@ ${c.bold}การใช้งานคำสั่ง:${c.reset}
   thepos                       เปิดเมนูควบคุมแบบอินเตอร์แอคทีฟ (Interactive Menu)
   thepos check                 ตรวจสอบความพร้อมของระบบทั้งหมด (Doctor / Readiness)
   thepos status                แสดงสถานะของบริการทั้งหมด (Status Dashboard)
-  thepos start [all|db|server|desktop]     เริ่มต้นบริการ
-  thepos stop [all|db|server|desktop]      หยุดบริการ
-  thepos restart [all|db|server|desktop]   รีสตาร์ทบริการ
-  thepos logs [server|desktop|db]          ดู Log แบบเรียลไทม์
+  thepos start [all|db|server|web|desktop]     เริ่มต้นบริการ
+  thepos stop [all|db|server|web|desktop]      หยุดบริการ
+  thepos restart [all|db|server|web|desktop]   รีสตาร์ทบริการ
+  thepos logs [server|web|desktop|db]          ดู Log แบบเรียลไทม์
   thepos test [all|unit|integration|typecheck|rust]  รันชุดทดสอบ
   thepos reset [-y|--force]                ล้างข้อมูลทั้งหมด (DB/Vault/Cache) และเริ่มระบบใหม่หมด
 `);

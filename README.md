@@ -25,17 +25,15 @@
 ```text
 thepos/
 ├── apps/
-│   ├── desktop/                  # Frontend (React 19 + Vite + TypeScript) และ Tauri 2 (Rust)
-│   │   ├── src/
-│   │   │   ├── components/       # AppShell, Modal, Autocomplete, WebAccessModal
-│   │   │   ├── features/         # โมดูลหน้าจอ (pos, stock, members, dividends, shifts, reports, settings, wizard)
-│   │   │   └── lib/              # native.ts (Tauri/Web adapter), alerts, idle-lock
+│   ├── desktop/                  # Desktop POS App (Tauri 2 + Rust + เชื่อม @thepos/ui)
 │   │   └── src-tauri/            # Rust backend (API proxy, Credential Vault, ESC/POS thermal printing)
-│   └── server/                   # Backend API (Bun + Hono + Zod + Prisma 6)
+│   ├── web/                      # บริการหน้าเว็บกลาง (Standalone SPA ใช้ @thepos/ui)
+│   └── server/                   # Backend API (Bun + Hono + Zod + Prisma 6 + Auto HTTPS)
 │       ├── prisma/               # schema.prisma, migrations, seed.ts, roles.ts
-│       ├── src/                  # index.ts, app.ts, server-admin.ts, server-security.ts, modules/
+│       ├── src/                  # index.ts, app.ts, tls.ts, server-admin.ts, server-security.ts, modules/
 │       └── test/                 # Unit tests และ PostgreSQL integration tests
 ├── packages/
+│   ├── ui/                       # React 19 UI ส่วนกลางใช้ร่วมกันระหว่าง desktop และ web
 │   ├── contracts/                # Zod schemas และ TypeScript types ใช้ร่วมกันระหว่าง client/server
 │   ├── shared/                   # ค่าคงที่และ Decimal utilities กลาง
 │   └── config/                   # Shared TypeScript config
@@ -168,11 +166,12 @@ bun run --cwd apps/desktop dev
 .\thepos                       # เปิดเมนูโต้ตอบ (Interactive Menu)
 .\thepos check                 # ตรวจความพร้อมของ Bun, Rust, Node, Docker, .env และ Migration
 .\thepos status                # แสดงสถานะ Database, Server และ Desktop App พร้อมดูพอร์ตที่ใช้งาน
-.\thepos start all             # เปิด Database + Server + Desktop App พร้อมกัน
-.\thepos start server          # เปิดเฉพาะ Server (เลือก start db | start desktop ได้)
-.\thepos stop all              # หยุด Desktop, Server และ Database
-.\thepos restart server        # รีสตาร์ทบริการที่ต้องการ (all | db | server | desktop)
-.\thepos logs server           # ดู Log แบบเรียลไทม์ (all | server | desktop | db)
+.\thepos start all             # เปิด Database + Server + Web Portal + Desktop App พร้อมกัน
+.\thepos start web             # เปิดเฉพาะบริการหน้าเว็บกลาง (apps/web พอร์ต 4173)
+.\thepos start server          # เปิดเฉพาะ Server (เลือก start db | server | web | desktop ได้)
+.\thepos stop all              # หยุด Desktop, Web Portal, Server และ Database
+.\thepos restart server        # รีสตาร์ทบริการที่ต้องการ (all | db | server | web | desktop)
+.\thepos logs server           # ดู Log แบบเรียลไทม์ (all | server | web | desktop | db)
 .\thepos test all              # รันชุดทดสอบ (all | unit | integration | typecheck | rust)
 .\thepos reset                 # ล้างข้อมูลทั้งหมดเพื่อเริ่มระบบใหม่ (ถามยืนยัน "RESET", ใส่ -y เพื่อข้ามการถาม)
 ```

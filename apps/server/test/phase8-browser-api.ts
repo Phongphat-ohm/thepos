@@ -1,7 +1,7 @@
 import type { SessionResponse } from "@thepos/contracts";
 import { seedRoles } from "../prisma/roles";
 import { createApp } from "../src/app";
-import { newToken } from "../src/security";
+import { newToken } from "../src/core/security";
 import { isolatedDatabase } from "./isolated-db";
 
 const target = new URL(process.env.TEST_DATABASE_URL ?? "");

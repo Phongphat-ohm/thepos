@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { resolveOrder } from "../src/modules/pagination";
+import { resolveOrder } from "../src/core/pagination";
 
 describe("pagination order resolution", () => {
   const sortMap: Record<string, (dir: "asc" | "desc") => Record<string, "asc" | "desc">[]> = {

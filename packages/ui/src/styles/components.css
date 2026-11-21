@@ -1,0 +1,181 @@
+/* Surfaces & Forms */
+.surface {
+  padding: clamp(1rem, 2.4vw, 1.5rem);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-surface);
+}
+.surface-heading { margin-bottom: 1rem; }
+.surface-heading h1, .surface-heading h2 { margin: 0; font-size: 1.25rem; font-weight: 600; line-height: 1.35; }
+.surface-heading p { margin: .35rem 0 0; color: var(--muted-foreground); overflow-wrap: anywhere; }
+.form-stack, .form-group { display: grid; gap: 1rem; }
+.form-group { min-width: 0; padding: .5rem 0 .875rem; border-bottom: 1px solid var(--border); }
+.form-group legend { font-size: 1.02rem; font-weight: 600; }
+.field-row { display: grid; gap: .85rem; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.field { min-width: 0; display: grid; gap: .35rem; align-content: start; }
+.autocomplete { position: relative; }
+.autocomplete-control { display: flex; align-items: center; gap: .2rem; position: relative; }
+.autocomplete-control .input { padding-inline-end: 2.2rem; }
+.autocomplete-control:has(button:first-of-type:not(:last-child)) .input { padding-inline-end: 4rem; }
+.autocomplete-icon { position: absolute; inset-inline-end: .3rem; display: grid; place-items: center; width: 1.75rem; height: 1.75rem; border-radius: .3rem; color: var(--muted-foreground); cursor: pointer; transition: background-color 140ms, color 140ms; }
+.autocomplete-icon:not(:last-child) { inset-inline-end: 2.05rem; }
+.autocomplete-icon:hover { background: var(--background); color: var(--primary); }
+.autocomplete-popup { position: absolute; z-index: 12; inset-inline: 0; inset-block-start: calc(100% + .25rem); min-width: 0; border: 1px solid var(--border); border-radius: .55rem; background: var(--surface); box-shadow: 0 6px 18px rgb(15 23 42 / 12%); }
+.autocomplete-options { max-height: 13rem; overflow-y: auto; list-style: none; padding: 0; margin: 0; }
+.autocomplete-options > li, .autocomplete-message, .autocomplete-more { padding: .5rem .7rem; overflow-wrap: anywhere; }
+.autocomplete-options > li { cursor: pointer; }
+.autocomplete-options > li[aria-selected=true] { font-weight: 600; }
+.autocomplete-options > li[data-active], .autocomplete-more:hover { background: var(--background); color: var(--primary); }
+.autocomplete-message { color: var(--muted-foreground); }
+.autocomplete-message button { margin-inline-start: .5rem; text-decoration: underline; cursor: pointer; }
+.autocomplete-more { width: 100%; border-top: 1px solid var(--border); text-align: start; color: var(--primary); cursor: pointer; }
+.field-with-action { display: grid; gap: .45rem; align-content: start; }
+.field-inline-actions { display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; }
+.label { font-weight: 500; font-size: .92rem; }
+.field-hint { color: var(--muted-foreground); font-size: .83rem; line-height: 1.4; }
+.input {
+  width: 100%;
+  min-height: 2.65rem;
+  padding: .45rem .7rem;
+  border: 1px solid #a6b3c8;
+  border-radius: var(--radius-control);
+  background: var(--surface);
+  color: var(--foreground);
+  caret-color: var(--primary);
+  font-family: inherit;
+}
+.input::placeholder { color: #64748b; }
+.input:hover { border-color: #64748b; }
+.pin-field { margin: 0; padding: 0; border: 0; }
+.pin-field > legend { margin-bottom: .35rem; }
+.pin-digits {
+  width: min(100%, 19rem);
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: clamp(.25rem, 1vw, .5rem);
+}
+.pin-digit {
+  min-width: 0;
+  min-height: 2.85rem;
+  padding-inline: 0;
+  text-align: center;
+  font-size: 1.2rem;
+}
+.pin-digit:focus { border-color: var(--focus); background: var(--accent-surface); }
+.input[type=file] { padding: .25rem; }
+.input::file-selector-button {
+  margin-inline-end: .55rem;
+  padding: .35rem .65rem;
+  border: 1px solid var(--border);
+  border-radius: .35rem;
+  color: var(--primary);
+  background: var(--accent-surface);
+  font: inherit;
+  cursor: pointer;
+}
+.form-actions { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .65rem; margin-top: .55rem; }
+.primary-action { margin-inline-start: auto; }
+
+.form-page { display: grid; gap: 1.25rem; }
+.form-page-header {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: .85rem;
+  padding-bottom: .9rem;
+  border-bottom: 1px solid var(--border);
+}
+.form-page-header h2 { margin: 0; font-size: 1.25rem; font-weight: 600; }
+
+/* Buttons */
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .45rem;
+  min-height: 2.6rem;
+  padding: .45rem .9rem;
+  border: 1px solid transparent;
+  border-radius: .45rem;
+  font-family: inherit;
+  font-size: .92rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 140ms, color 140ms, border-color 140ms, transform 100ms;
+}
+.button svg, .notice svg, .profile svg { width: 1.05rem; height: 1.05rem; flex: 0 0 auto; }
+.button:disabled { cursor: not-allowed; opacity: .6; }
+.button:not(:disabled):active { transform: translateY(1px); }
+.button-primary { background: var(--primary); color: #fff; }
+.button-primary:not(:disabled):hover { background: var(--primary-hover); }
+.button-ghost, .button-outline { color: var(--primary); background: var(--surface); }
+.button-outline { border-color: var(--border); }
+.button-ghost:not(:disabled):hover, .button-outline:not(:disabled):hover { background: #eff6ff; }
+
+.notice {
+  display: flex;
+  gap: .6rem;
+  align-items: center;
+  padding: .7rem .85rem;
+  margin-bottom: 1rem;
+  background: #fff6ed;
+  border: 1px solid #f4d0af;
+  color: #7d3210;
+  border-radius: .5rem;
+  font-size: .92rem;
+}
+.profile { display: grid; margin: 0; }
+.profile > div { display: grid; grid-template-columns: minmax(6.5rem, 8.5rem) 1fr; gap: .5rem; padding-block: .75rem; border-bottom: 1px solid var(--border); }
+.profile dt { display: flex; align-items: center; gap: .55rem; color: var(--muted-foreground); }
+.profile dd { margin: 0; font-weight: 600; overflow-wrap: anywhere; }
+.web-qr-frame {
+  display: grid;
+  justify-items: center;
+  gap: .75rem;
+  padding: 1.1rem;
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-surface);
+}
+.web-qr-frame img {
+  display: block;
+  width: min(100%, 13.75rem);
+  height: auto;
+  border-radius: var(--radius-control);
+  border: 1px solid var(--border);
+  background: #fff;
+}
+.web-qr-placeholder {
+  width: 13.75rem;
+  height: 13.75rem;
+  border-radius: var(--radius-control);
+  background: #e2e8f0;
+}
+.web-qr-url {
+  max-width: 100%;
+  padding: .3rem .65rem;
+  border-radius: .35rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--primary);
+  font-size: .85rem;
+  overflow-wrap: anywhere;
+  text-align: center;
+}
+.ui-loading { display: grid; gap: .7rem; color: var(--primary); }
+.ui-loading-panel, .ui-loading-skeleton { padding: .9rem 1rem; background: #eff5ff; border: 1px solid #c9d8ef; border-radius: .65rem; }
+.ui-loading-caption { display: flex; align-items: center; gap: .55rem; font-weight: 500; font-size: .9rem; }
+.ui-loading-inline { padding: .42rem 0; }
+.ui-spinner { flex: none; animation: ui-spin .85s linear infinite; }
+.ui-loading-track { height: .28rem; border-radius: 1rem; overflow: hidden; background: #d7e3f5; }
+.ui-loading-track span { display: block; width: 36%; height: 100%; border-radius: inherit; background: var(--primary); animation: ui-progress 1.35s ease-in-out infinite alternate; }
+.ui-skeleton { display: grid; gap: .58rem; }
+.ui-skeleton-row { display: grid; grid-template-columns: 2fr 1.35fr 1fr; gap: .8rem; }
+.ui-skeleton-row span { display: block; height: .7rem; border-radius: .3rem; background: #d6e3f7; animation: ui-pulse 1.25s ease-in-out infinite alternate; }
+.ui-skeleton-row:nth-child(2) span:nth-child(2), .ui-skeleton-row:nth-child(3) span:first-child { width: 72%; }
+@keyframes ui-spin { to { transform: rotate(360deg); } }
+@keyframes ui-progress { to { transform: translateX(177%); } }
+@keyframes ui-pulse { to { opacity: .48; } }
+@media (prefers-reduced-motion: reduce) {
+  .ui-spinner, .ui-loading-track span, .ui-skeleton-row span { animation: none; }
+}

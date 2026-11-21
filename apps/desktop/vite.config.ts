@@ -45,7 +45,7 @@ function rootBrandLogoPlugin(): Plugin {
 
 export default defineConfig({
   plugins: [react(), rootBrandLogoPlugin()],
-  resolve: { alias: { "@": fileURLToPath(new URL("./src", import.meta.url)) } },
+  resolve: { alias: { "@": fileURLToPath(new URL("../../packages/ui/src", import.meta.url)) } },
   server: {
     host: "127.0.0.1",
     port: 1420,
@@ -60,10 +60,25 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
+          react: ["react", "react-dom"],
+          ui: ["lucide-react", "sweetalert2"],
+          validation: ["zod", "@thepos/contracts"],
           exceljs: ["exceljs"],
         },
       },
     },
+  },
+  optimizeDeps: {
+    include: [
+      "react",
+      "react-dom",
+      "lucide-react",
+      "zod",
+      "sweetalert2",
+      "clsx",
+      "class-variance-authority",
+      "@radix-ui/react-label",
+    ],
   },
   clearScreen: false,
 });

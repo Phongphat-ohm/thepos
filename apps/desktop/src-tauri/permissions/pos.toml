@@ -1,7 +1,7 @@
 [[permission]]
 identifier = "allow-pos-request"
 description = "Permits the main window to call the fixed set of POS API operations."
-commands.allow = ["pos_request", "open_web"]
+commands.allow = ["pos_request", "brand_logo", "is_fullscreen", "set_fullscreen"]
 
 [[permission]]
 identifier = "allow-receipt-printing"

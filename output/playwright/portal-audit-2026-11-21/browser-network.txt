@@ -1,0 +1,41 @@
+### Result
+74. [GET] http://127.0.0.1:4187/api/v1/health => [404] Not Found
+149. [GET] http://127.0.0.1:4187/api/v1/health => [200] OK
+151. [GET] http://127.0.0.1:4187/api/v1/setup/status => [200] OK
+153. [POST] http://127.0.0.1:4187/api/v1/auth/web-login => [200] OK
+162. [GET] http://127.0.0.1:4187/api/v1/dashboard => [200] OK
+164. [GET] http://127.0.0.1:4187/api/v1/auth/me => [200] OK
+165. [GET] http://127.0.0.1:4187/api/v1/dashboard => [503] Service Unavailable
+167. [GET] http://127.0.0.1:4187/api/v1/auth/me => [200] OK
+168. [GET] http://127.0.0.1:4187/api/v1/reports?kind=daily&start=2026-11-01&end=2026-11-21&q=&page=1&limit=25 => [200] OK
+169. [GET] http://127.0.0.1:4187/api/v1/reports?kind=daily&start=2026-11-01&end=2026-11-21&q=&page=1&limit=25&sortCol=1&sortDir=desc => [503] Service Unavailable
+170. [GET] http://127.0.0.1:4187/api/v1/auth/me => [200] OK
+171. [GET] http://127.0.0.1:4187/api/v1/dashboard => [503] Service Unavailable
+172. [GET] http://127.0.0.1:4187/api/v1/dashboard => [200] OK
+173. [GET] http://127.0.0.1:4187/api/v1/dashboard => [503] Service Unavailable
+174. [GET] http://127.0.0.1:4187/api/v1/auth/me => [200] OK
+181. [GET] http://127.0.0.1:4187/api/v1/catalog/products?q=&page=1&limit=25&sortBy=name&sortDir=asc => [200] OK
+184. [GET] http://127.0.0.1:4187/api/v1/catalog/products?q=&page=2&limit=25&sortBy=name&sortDir=asc => [200] OK
+185. [GET] http://127.0.0.1:4187/api/v1/catalog/products?q=NEW&page=1&limit=25&sortBy=name&sortDir=asc => [200] OK
+186. [GET] http://127.0.0.1:4187/api/v1/catalog/products?q=&page=1&limit=25&sortBy=name&sortDir=asc => [200] OK
+187. [GET] http://127.0.0.1:4187/api/v1/auth/me => [200] OK
+188. [GET] http://127.0.0.1:4187/api/v1/auth/me => [200] OK
+191. [GET] http://127.0.0.1:4187/api/v1/auth/me => [200] OK
+192. [GET] http://127.0.0.1:4187/api/v1/auth/me => [200] OK
+193. [GET] http://127.0.0.1:4187/api/v1/auth/me => [200] OK
+194. [GET] http://127.0.0.1:4187/api/v1/auth/me => [200] OK
+197. [GET] http://127.0.0.1:4187/api/v1/members?page=1&limit=25&sortBy=number&sortDir=asc => [200] OK
+198. [GET] http://127.0.0.1:4187/api/v1/auth/me => [200] OK
+199. [GET] http://127.0.0.1:4187/api/v1/members?page=2&limit=25&sortBy=number&sortDir=asc => [200] OK
+200. [GET] http://127.0.0.1:4187/api/v1/members?q=NEW&page=1&limit=25&sortBy=number&sortDir=asc => [200] OK
+201. [GET] http://127.0.0.1:4187/api/v1/members?page=1&limit=25&sortBy=number&sortDir=asc => [200] OK
+202. [GET] http://127.0.0.1:4187/api/v1/auth/me => [200] OK
+203. [GET] http://127.0.0.1:4187/api/v1/reports?kind=daily&start=2026-11-21&end=2026-11-21 => [401] Unauthorized
+204. [POST] http://127.0.0.1:4187/api/v1/auth/refresh => [200] OK
+205. [GET] http://127.0.0.1:4187/api/v1/reports?kind=daily&start=2026-11-21&end=2026-11-21 => [200] OK
+206. [GET] http://127.0.0.1:4187/api/v1/auth/me => [200] OK
+207. [GET] http://127.0.0.1:4187/api/v1/auth/me => [200] OK
+208. [GET] http://127.0.0.1:4187/api/v1/reports?kind=daily&start=2026-11-21&end=2026-11-21 => [401] Unauthorized
+209. [POST] http://127.0.0.1:4187/api/v1/auth/refresh => [401] Unauthorized
+
+Note: 171 static requests not shown, run with --static option to see them.

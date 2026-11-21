@@ -1,10 +1,11 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 mod api;
-mod printing;
-mod vault;
+mod hardware;
+mod security;
 
 use api::{Api, Command};
+use hardware::printing;
 use serde_json::Value;
 use tauri::{Manager, State};
 
@@ -39,49 +40,19 @@ async fn print_receipt(
 }
 
 #[tauri::command]
-async fn open_web(state: State<'_, Api>) -> Result<(), String> {
-    if !state.has_access().await {
-        return Err("SESSION_LOCKED".into());
-    }
-    let url = state.current_url().await?;
-    open_url(&url)
-}
-
-#[tauri::command]
 async fn brand_logo(state: State<'_, Api>) -> Result<Option<String>, String> {
     Ok(state.read_brand_logo().await)
 }
 
-#[cfg(target_os = "windows")]
-fn open_url(url: &str) -> Result<(), String> {
-    use std::ffi::c_void;
-    use std::ptr::null;
-
-    #[link(name = "shell32")]
-    extern "system" {
-        fn ShellExecuteW(
-            hwnd: *mut c_void,
-            operation: *const u16,
-            file: *const u16,
-            parameters: *const u16,
-            directory: *const u16,
-            show_cmd: i32,
-        ) -> isize;
-    }
-
-    let wide = |s: &str| s.encode_utf16().chain([0]).collect::<Vec<u16>>();
-    let op = wide("open");
-    let target = wide(url);
-    let result = unsafe { ShellExecuteW(std::ptr::null_mut(), op.as_ptr(), target.as_ptr(), null(), null(), 1) };
-    if result <= 32 {
-        return Err("NETWORK_ERROR".into());
-    }
-    Ok(())
+#[tauri::command]
+fn is_fullscreen(window: tauri::WebviewWindow) -> Result<bool, String> {
+    window.is_fullscreen().map_err(|e| e.to_string())
 }
 
-#[cfg(not(target_os = "windows"))]
-fn open_url(_url: &str) -> Result<(), String> {
-    Err("UNAVAILABLE".into())
+#[tauri::command]
+fn set_fullscreen(window: tauri::WebviewWindow, fullscreen: bool) -> Result<bool, String> {
+    window.set_fullscreen(fullscreen).map_err(|e| e.to_string())?;
+    window.is_fullscreen().map_err(|e| e.to_string())
 }
 
 fn main() {
@@ -109,8 +80,9 @@ fn main() {
             pos_request,
             receipt_printers,
             print_receipt,
-            open_web,
-            brand_logo
+            brand_logo,
+            is_fullscreen,
+            set_fullscreen
         ])
         .run(tauri::generate_context!())
         .expect("Failed to run the desktop application");

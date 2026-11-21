@@ -1,0 +1,42 @@
+/* Reusable Modal & POS Dialog */
+.thepos-modal, .register-dialog {
+  width: min(calc(100% - 2rem), 44rem);
+  max-height: calc(100% - 2rem);
+  margin: auto;
+  padding: clamp(1rem, 2.5vw, 1.5rem);
+  color: var(--foreground);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-dialog);
+  box-shadow: 0 20px 62px rgb(15 23 42 / 25%);
+  overflow: auto;
+}
+.thepos-modal-sm { width: min(calc(100% - 2rem), 28rem); }
+.thepos-modal-lg { width: min(calc(100% - 2rem), 56rem); }
+.thepos-modal::backdrop, .register-dialog::backdrop { background: rgb(15 23 42 / 55%); }
+.thepos-modal-header, .register-dialog-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .75rem;
+  margin-bottom: 1rem;
+  padding-bottom: .7rem;
+  border-bottom: 1px solid var(--border);
+}
+.thepos-modal-header h2, .register-dialog h2 { margin: 0; font-size: 1.2rem; font-weight: 600; overflow-wrap: anywhere; }
+.thepos-modal > .ui-loading, .register-dialog > .ui-loading { margin-bottom: 1rem; }
+.thepos-modal-body[inert] { opacity: .65; }
+.thepos-alert-layer { position: fixed; inset: 0; margin: 0; padding: 0; border: 0; width: 100%; height: 100%; max-width: none; max-height: none; overflow: visible; background: transparent; }
+.thepos-alert-layer::backdrop { background: transparent; }
+.register-dialog h3, .register-approval legend { font-weight: 600; }
+.register-inline { display: flex; align-items: center; flex-wrap: wrap; gap: .6rem; }
+.receipt-logo { width: auto; max-width: min(100%, 10rem); max-height: 4.5rem; object-fit: contain; }
+.receipt-message { white-space: pre-wrap; overflow-wrap: anywhere; }
+.register-payment-total {
+  display: flex; align-items: baseline; flex-wrap: wrap; justify-content: space-between; gap: .65rem;
+  background: #eff6ff; border-radius: .55rem; padding: .75rem 1rem;
+}
+.register-payment-total strong { color: var(--primary); font-size: 1.55rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+.register-payment-line { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)) auto; align-items: end; gap: .6rem; }
+.register-approval { min-width: 0; padding: .75rem; border: 1px solid var(--border); border-radius: .5rem; }
+.register-refunds { margin-inline-start: 1.25rem; list-style: disc; }
