@@ -1,0 +1,633 @@
+{
+  "status": "GATE: OPEN 38 (rounds used up)",
+  "open": [
+    {
+      "check": "hero-fill",
+      "where": "section#statsGrid \"ฐานข้อมูล พร้อมใช้งาน ร้านค้า ร้านทดสอบ \"",
+      "msg": "the next section shows on the first screen: it starts at 255px on a 900px screen (the hero ends at 227px)",
+      "fix": "let the hero fill the first screen alone (min-height: 100svh, less above it): nothing of the next section on load",
+      "widths": [
+        1440,
+        390
+      ],
+      "from": "consistency",
+      "ids": [
+        "hero-fill"
+      ],
+      "wheres": [
+        "section#statsGrid \"ฐานข้อมูล พร้อมใช้งาน ร้านค้า ร้านทดสอบ \""
+      ]
+    },
+    {
+      "check": "flush",
+      "where": "main#main > div.page-head > div > p \"ตรวจสอบระบบและเครื่อง POS ที่เชื่อมต่อจา\"",
+      "msg": "its last line sits 2px above the rule on top of section#statsGrid",
+      "fix": "give the section its padding at the edge where the ground changes (the closing call keeps a clear gap above the footer)",
+      "widths": [
+        1440
+      ],
+      "from": "consistency",
+      "ids": [
+        "flush"
+      ],
+      "wheres": [
+        "main#main > div.page-head > div > p \"ตรวจสอบระบบและเครื่อง POS ที่เชื่อมต่อจา\""
+      ]
+    },
+    {
+      "check": "flush",
+      "where": "main#main > div.workspace > aside.stack > section.panel:nth-of-type(1) \"รายละเอียดระบบ Host 0.0.0.0 Port 3000 เร\"",
+      "msg": "its first line sits 0px under the top edge of aside.stack, where the ground changes",
+      "fix": "give the section its padding at the edge where the ground changes (the closing call keeps a clear gap above the footer)",
+      "widths": [
+        1440,
+        390
+      ],
+      "from": "consistency",
+      "ids": [
+        "flush"
+      ],
+      "wheres": [
+        "main#main > div.workspace > aside.stack > section.panel:nth-of-type(1) \"รายละเอียดระบบ Host 0.0.0.0 Port 3000 เร\""
+      ]
+    },
+    {
+      "check": "fold-cut",
+      "where": "h2#devicesHeading \"เครื่อง POS ที่ลงทะเบียน\"",
+      "msg": "a 19px line is sliced by the bottom of the first screen (7px of it below the fold)",
+      "fix": "size the hero so the heading ends above the fold, or starts below it",
+      "widths": [
+        1440
+      ],
+      "from": "consistency",
+      "ids": [
+        "fold-cut"
+      ],
+      "wheres": [
+        "h2#devicesHeading \"เครื่อง POS ที่ลงทะเบียน\""
+      ]
+    },
+    {
+      "check": "no-visual",
+      "where": "main#main > div.workspace > div.stack > section.panel.connection \"เชื่อมต่อเครื่อง POS\"",
+      "msg": "no picture, effect or mock in this section; a feature section needs a visual",
+      "fix": "give the section a visual: a UI fragment on a ground, real icons, or a photograph that fits",
+      "widths": [
+        1440,
+        390
+      ],
+      "from": "consistency",
+      "ids": [
+        "no-visual"
+      ],
+      "wheres": [
+        "main#main > div.workspace > div.stack > section.panel.connection \"เชื่อมต่อเครื่อง POS\""
+      ]
+    },
+    {
+      "check": "no-visual",
+      "where": "main#main > div.workspace > div.stack > section.panel:nth-of-type(2) \"เครื่อง POS ที่ลงทะเบียน\"",
+      "msg": "no picture, effect or mock in this section; a feature section needs a visual",
+      "fix": "give the section a visual: a UI fragment on a ground, real icons, or a photograph that fits",
+      "widths": [
+        1440,
+        390
+      ],
+      "from": "consistency",
+      "ids": [
+        "no-visual"
+      ],
+      "wheres": [
+        "main#main > div.workspace > div.stack > section.panel:nth-of-type(2) \"เครื่อง POS ที่ลงทะเบียน\""
+      ]
+    },
+    {
+      "check": "button-styles",
+      "where": "(one screen)",
+      "msg": "3 button styles on one screen: soft, outline #dce4ef (\"รีเฟรชข้อมูล\"); soft, outline #58677e (\"คัดลอก URL\"); soft, fill #ffffff, outline #dce4ef (\"คัดลอกรหัส\"); the odd one out: \"คัดลอกรหัส\"",
+      "fix": "one primary and one secondary button: one shape, one height per size, one label size",
+      "widths": [
+        1440
+      ],
+      "from": "consistency",
+      "ids": [
+        "button-styles"
+      ],
+      "wheres": [
+        "(one screen)"
+      ]
+    },
+    {
+      "check": "button-styles",
+      "where": "(the page)",
+      "msg": "4 button styles on the page: soft, outline #dce4ef x2 (\"รีเฟรชข้อมูล\"); soft, fill #ffffff, outline #dce4ef x1 (\"คัดลอกรหัส\"); soft, outline #58677e x2 (\"คัดลอก URL\"); soft, fill #b91c1c x1 (\"ล้างข้อมูลทั้งหมด\")",
+      "fix": "one primary and one secondary button: one shape, one height per size, one label size",
+      "widths": [
+        1440,
+        390
+      ],
+      "from": "consistency",
+      "ids": [
+        "button-styles"
+      ],
+      "wheres": [
+        "(the page)"
+      ]
+    },
+    {
+      "check": "cta",
+      "where": "main#main > div.page-head",
+      "msg": "the hero has no button (the nav's does not count)",
+      "fix": "add the action: a button in the hero, one on every priced item, one in the closing section",
+      "widths": [
+        1440,
+        390
+      ],
+      "from": "consistency",
+      "ids": [
+        "cta"
+      ],
+      "wheres": [
+        "main#main > div.page-head"
+      ]
+    },
+    {
+      "check": "copy-headline",
+      "where": "main#main > div.page-head > div > h1 \"ข้อมูลเซิร์ฟเวอร์\"",
+      "msg": "\"ข้อมูลเซิร์ฟเวอร์\" does not name what is sold (pos, from flags); only the line under it does",
+      "fix": "put the category noun in the h1 (and who it is for, or where), in 2 to 8 words",
+      "widths": [
+        1440
+      ],
+      "from": "consistency",
+      "ids": [
+        "copy-headline"
+      ],
+      "wheres": [
+        "main#main > div.page-head > div > h1 \"ข้อมูลเซิร์ฟเวอร์\""
+      ]
+    },
+    {
+      "check": "section-gaps",
+      "where": "main#main > div.workspace > aside.stack / main#main > section.panel.danger-panel",
+      "msg": "509px between these sections, +561% against the median 77px of gaps at a change of ground",
+      "fix": "use one gap between sections (all within 25% of each other)",
+      "widths": [
+        1440
+      ],
+      "from": "consistency",
+      "ids": [
+        "section-gaps"
+      ],
+      "wheres": [
+        "main#main > div.workspace > aside.stack / main#main > section.panel.danger-panel"
+      ]
+    },
+    {
+      "check": "focus-visible",
+      "where": "button#copyKeyBtn \"คัดลอกรหัส\"",
+      "msg": "Tab stop 4, button \"คัดลอกรหัส\": its focus change is faint: 2.94:1 against the ground, 3:1 needed",
+      "fix": "keep the kit's ring (system.css :focus-visible, 2px in --action, there at once); a control that hides itself shows on focus",
+      "widths": [
+        1440
+      ],
+      "from": "consistency",
+      "ids": [
+        "focus-visible"
+      ],
+      "wheres": [
+        "button#copyKeyBtn \"คัดลอกรหัส\""
+      ]
+    },
+    {
+      "check": "moment-none",
+      "where": "(the page)",
+      "msg": "a software page (--type) deals no moment: every kind carries one, two on a long page (moments.md)",
+      "fix": "deal one (moments.mjs pick --page software) and mount it in its own section",
+      "widths": [
+        1440
+      ],
+      "from": "consistency",
+      "ids": [
+        "moment-none"
+      ],
+      "wheres": [
+        "(the page)"
+      ]
+    },
+    {
+      "check": "hero-screen",
+      "where": "main#main > div.page-head \"SERVER OVERVIEWข้อมูลเซิร์ฟเวอร์ตรวจสอบร\"",
+      "msg": "the hero ends at 227px on a 900px screen, 673px above the fold: it ends at the fold, 1px either way (SR-1)",
+      "fix": "make the hero exactly one screen (height: 100svh, its content fitted inside), never taller or shorter",
+      "widths": [
+        1440
+      ],
+      "from": "consistency",
+      "ids": [
+        "hero-screen"
+      ],
+      "wheres": [
+        "main#main > div.page-head \"SERVER OVERVIEWข้อมูลเซิร์ฟเวอร์ตรวจสอบร\""
+      ]
+    },
+    {
+      "check": "hero-screen",
+      "where": "section#statsGrid \"ฐานข้อมูลพร้อมใช้งานร้านค้าร้านทดสอบเครื\"",
+      "msg": "645px of the next section shows on the first screen (from 255px on a 900px screen): nothing below the hero shows at load (SR-1)",
+      "fix": "end the hero at the fold so nothing of the next section shows at load (hero height: 100svh)",
+      "widths": [
+        1440
+      ],
+      "from": "consistency",
+      "ids": [
+        "hero-screen"
+      ],
+      "wheres": [
+        "section#statsGrid \"ฐานข้อมูลพร้อมใช้งานร้านค้าร้านทดสอบเครื\""
+      ]
+    },
+    {
+      "check": "section-height",
+      "where": "main#main > footer \"ThePOS · การจัดการเซิร์ฟเวอร์การล้างข้อม\"",
+      "msg": "the section is 20px tall (0 screens), 880px short of one screen (900px): every section after the hero is one screen or two, 2px either way (SR-2)",
+      "fix": "set the section to one screen or two (height: calc(var(--h,1) * 100vh), --h 1 or 2) and cut or split its content to fit",
+      "widths": [
+        1440
+      ],
+      "from": "consistency",
+      "ids": [
+        "section-height"
+      ],
+      "wheres": [
+        "main#main > footer \"ThePOS · การจัดการเซิร์ฟเวอร์การล้างข้อม\"",
+        "main#main > section.panel.danger-panel \"ล้างข้อมูลเซิร์ฟเวอร์ลบข้อมูลร้าน บัญชีผ\"",
+        "main#main > div.workspace \"เชื่อมต่อเครื่อง POSใช้ URL และรหัสนี้ใน\""
+      ]
+    },
+    {
+      "check": "section-height",
+      "where": "section#statsGrid \"ฐานข้อมูลพร้อมใช้งานร้านค้าร้านทดสอบเครื\"",
+      "msg": "the section is 112px tall (0.1 screens), 788px short of one screen (900px): every section after the hero is one screen or two, 2px either way (SR-2)",
+      "fix": "set the section to one screen or two (height: calc(var(--h,1) * 100vh), --h 1 or 2) and cut or split its content to fit",
+      "widths": [
+        1440,
+        390
+      ],
+      "from": "consistency",
+      "ids": [
+        "section-height",
+        "screen-short"
+      ],
+      "wheres": [
+        "section#statsGrid \"ฐานข้อมูลพร้อมใช้งานร้านค้าร้านทดสอบเครื\"",
+        "#statsGrid section.stats \"ฐานข้อมูลพร้อมใช้งานร้านค้าร้านท\""
+      ]
+    },
+    {
+      "check": "one-section",
+      "where": "main#main > div.page-head > div > h1 \"ข้อมูลเซิร์ฟเวอร์\"",
+      "msg": "the screen at scroll 0px (stride 0) shows 112px of section 2 and the heading of section 1 whole and the content of 3 sections, over 24px each beside section 3: a screen shows one section (another may peek 8px, 24px WARN) (SR-4)",
+      "fix": "make each section exactly one screen or two, so a screen shows one section and no neighbour peeks",
+      "widths": [
+        1440
+      ],
+      "from": "consistency",
+      "ids": [
+        "one-section"
+      ],
+      "wheres": [
+        "main#main > div.page-head > div > h1 \"ข้อมูลเซิร์ฟเวอร์\"",
+        "main#main > div.page-head \"SERVER OVERVIEWข้อมูลเซิร์ฟเวอร์ตรวจสอบร\"",
+        "main#main > div.workspace \"เชื่อมต่อเครื่อง POSใช้ URL และรหัสนี้ใน\"",
+        "main#main > footer \"ThePOS · การจัดการเซิร์ฟเวอร์การล้างข้อม\""
+      ]
+    },
+    {
+      "check": "one-section",
+      "where": "section#statsGrid \"ฐานข้อมูลพร้อมใช้งานร้านค้าร้านทดสอบเครื\"",
+      "msg": "the screen at scroll 255px (the top of section 2) shows 112px of section 2 and the content of 2 sections, over 24px each beside section 3: a screen shows one section (another may peek 8px, 24px WARN) (and 1 more like it: scroll 392px) (SR-4)",
+      "fix": "make each section exactly one screen or two, so a screen shows one section and no neighbour peeks",
+      "widths": [
+        1440
+      ],
+      "from": "consistency",
+      "ids": [
+        "one-section"
+      ],
+      "wheres": [
+        "section#statsGrid \"ฐานข้อมูลพร้อมใช้งานร้านค้าร้านทดสอบเครื\""
+      ]
+    },
+    {
+      "check": "one-heading",
+      "where": "h2#devicesHeading \"เครื่อง POS ที่ลงทะเบียน\"",
+      "msg": "the section holds 3 h2 headings: one per section, first in its .wrap (SR-5)",
+      "fix": "give each section one h2, first in its .wrap, and the hero only its h1",
+      "widths": [
+        1440
+      ],
+      "from": "consistency",
+      "ids": [
+        "one-heading"
+      ],
+      "wheres": [
+        "h2#devicesHeading \"เครื่อง POS ที่ลงทะเบียน\""
+      ]
+    },
+    {
+      "check": "one-heading",
+      "where": "h2#resetHeading \"ล้างข้อมูลเซิร์ฟเวอร์\"",
+      "msg": "headings of two sections show whole on one screen at 3 of 11 scroll positions (27.3%; at scroll 400, 450, 500px), here with \"เชื่อมต่อเครื่อง POS\": at most 3% on a desktop (SR-5)",
+      "fix": "make the sections one screen tall so their headings sit a screen apart and two never share one",
+      "widths": [
+        1440
+      ],
+      "from": "consistency",
+      "ids": [
+        "one-heading"
+      ],
+      "wheres": [
+        "h2#resetHeading \"ล้างข้อมูลเซิร์ฟเวอร์\""
+      ]
+    },
+    {
+      "check": "container-edges",
+      "where": "header.topbar \"ThePOS SERVER ADMIN รีเฟรชข้อมูลออกจากระ\"",
+      "msg": "the nav's content runs 168px from the left and 120px from the right (read from its outermost blocks: no .wrap): the page's container starts at 120px; 168 and 120px are not one margin; the margin is 64-120px at 1440px (one container, equal margins, 2px either way) (SR-6)",
+      "fix": "use one container on every section and the nav (.wrap): one margin left and right, 64-120px on a desktop, 16-24px on a phone",
+      "widths": [
+        1440
+      ],
+      "from": "consistency",
+      "ids": [
+        "container-edges"
+      ],
+      "wheres": [
+        "header.topbar \"ThePOS SERVER ADMIN รีเฟรชข้อมูลออกจากระ\""
+      ]
+    },
+    {
+      "check": "container-edges",
+      "where": "section#statsGrid \"ฐานข้อมูลพร้อมใช้งานร้านค้าร้านทดสอบเครื\"",
+      "msg": "the content of section 2 runs 121px from the left and 121px from the right (read from its outermost blocks: no .wrap): the margin is 64-120px at 1440px (one container, equal margins, 2px either way) (and 1 more like it: \"ล้างข้อมูลเซิร์ฟเวอร์ลบข\") (SR-6)",
+      "fix": "use one container on every section and the nav (.wrap): one margin left and right, 64-120px on a desktop, 16-24px on a phone",
+      "widths": [
+        1440
+      ],
+      "from": "consistency",
+      "ids": [
+        "container-edges"
+      ],
+      "wheres": [
+        "section#statsGrid \"ฐานข้อมูลพร้อมใช้งานร้านค้าร้านทดสอบเครื\""
+      ]
+    },
+    {
+      "check": "container-edges",
+      "where": "a.skip \"ข้ามไปเนื้อหา\"",
+      "msg": "a <a> at the top of the page, outside header.nav, main, footer.closing and nav.actionbar (SR-6)",
+      "fix": "build the page as header.nav, a main of sections (each one in-flow .wrap plus background layers) and footer.closing",
+      "widths": [
+        1440
+      ],
+      "from": "consistency",
+      "ids": [
+        "container-edges"
+      ],
+      "wheres": [
+        "a.skip \"ข้ามไปเนื้อหา\""
+      ]
+    },
+    {
+      "check": "container-edges",
+      "where": "aside.stack > section.panel:nth-of-type(1) > div.panel-head > h2 \"รายละเอียดระบบ\"",
+      "msg": "the h2 starts 773px right of the container's left: every h1 and h2 starts on it, 2px either way (SR-6)",
+      "fix": "start the text on the container's left, or on the one split line every split shares",
+      "widths": [
+        1440
+      ],
+      "from": "consistency",
+      "ids": [
+        "container-edges"
+      ],
+      "wheres": [
+        "aside.stack > section.panel:nth-of-type(1) > div.panel-head > h2 \"รายละเอียดระบบ\""
+      ]
+    },
+    {
+      "check": "container-edges",
+      "where": "code#connectKeyText \"POS-DEMO-DEMO-DEMO\"",
+      "msg": "1 text block starts on a left line at x 162, 42px from the container's left: text starts on the container's left, or on one split line (x 630, 732, 834) (and 4 more like it: x 145, \"เชื่อมต่อเครื่อง POS\", \"เครื่อง POS ที่ลงทะเบียน\") (SR-6)",
+      "fix": "start the text on the container's left, or on the one split line every split shares",
+      "widths": [
+        1440
+      ],
+      "from": "consistency",
+      "ids": [
+        "container-edges"
+      ],
+      "wheres": [
+        "code#connectKeyText \"POS-DEMO-DEMO-DEMO\""
+      ]
+    },
+    {
+      "check": "container-edges",
+      "where": "main#main > div.workspace > div.stack > section.panel.connection \"เชื่อมต่อเครื่อง POSใช้ URL และรหัสนี้ใน\"",
+      "msg": "a box over half the container wide runs 120-844px, not on the container's lines at 120-1320px (SR-6)",
+      "fix": "run the picture or box from the container's left line to its right line, or put it in a row or a split",
+      "widths": [
+        1440
+      ],
+      "from": "consistency",
+      "ids": [
+        "container-edges"
+      ],
+      "wheres": [
+        "main#main > div.workspace > div.stack > section.panel.connection \"เชื่อมต่อเครื่อง POSใช้ URL และรหัสนี้ใน\""
+      ]
+    },
+    {
+      "check": "container-edges",
+      "where": "main#main > div.workspace > div.stack > section.panel:nth-of-type(2) \"เครื่อง POS ที่ลงทะเบียนผู้ใช้ล่าสุดและส\"",
+      "msg": "a box over half the container wide runs 120-844px, not on the container's lines at 120-1320px (SR-6)",
+      "fix": "run the picture or box from the container's left line to its right line, or put it in a row or a split",
+      "widths": [
+        1440
+      ],
+      "from": "consistency",
+      "ids": [
+        "container-edges"
+      ],
+      "wheres": [
+        "main#main > div.workspace > div.stack > section.panel:nth-of-type(2) \"เครื่อง POS ที่ลงทะเบียนผู้ใช้ล่าสุดและส\""
+      ]
+    },
+    {
+      "check": "flush",
+      "where": "span#updatedAt \"อัปเดตล่าสุด 13:54:45\"",
+      "msg": "its last line sits 3px above the rule on top of section#statsGrid",
+      "fix": "give the section its padding at the edge where the ground changes (the closing call keeps a clear gap above the footer)",
+      "widths": [
+        390
+      ],
+      "from": "consistency",
+      "ids": [
+        "flush"
+      ],
+      "wheres": [
+        "span#updatedAt \"อัปเดตล่าสุด 13:54:45\""
+      ]
+    },
+    {
+      "check": "cut-text",
+      "where": "tbody#devicesBody > tr:nth-of-type(1) > td:nth-of-type(4) > span.badge.ok \"เปิดใช้งาน\"",
+      "msg": "cut 18px at the right by the overflow of main#main > div.workspace > div.stack > section.panel:nth-of-type(2) (and 1 more like it: \"เปิดใช้งาน\")",
+      "fix": "give the text room: no overflow clipping a line, no line past its box",
+      "widths": [
+        390
+      ],
+      "from": "consistency",
+      "ids": [
+        "cut-text"
+      ],
+      "wheres": [
+        "tbody#devicesBody > tr:nth-of-type(1) > td:nth-of-type(4) > span.badge.ok \"เปิดใช้งาน\""
+      ]
+    },
+    {
+      "check": "no-visual",
+      "where": "main#main > div.workspace > aside.stack \"รายละเอียดระบบ\"",
+      "msg": "no picture, effect or mock in this section; a feature section needs a visual",
+      "fix": "give the section a visual: a UI fragment on a ground, real icons, or a photograph that fits",
+      "widths": [
+        390
+      ],
+      "from": "consistency",
+      "ids": [
+        "no-visual"
+      ],
+      "wheres": [
+        "main#main > div.workspace > aside.stack \"รายละเอียดระบบ\""
+      ]
+    },
+    {
+      "check": "text-only",
+      "where": "main#main > section.panel.danger-panel \"ล้างข้อมูลเซิร์ฟเวอร์\"",
+      "msg": "the closing section is only text: no picture, icon, mock or effect in it",
+      "fix": "give the section a visual: a photograph that fits, the real icons, or a UI fragment on a ground",
+      "widths": [
+        390
+      ],
+      "from": "consistency",
+      "ids": [
+        "text-only"
+      ],
+      "wheres": [
+        "main#main > section.panel.danger-panel \"ล้างข้อมูลเซิร์ฟเวอร์\""
+      ]
+    },
+    {
+      "check": "edge-right",
+      "where": "div.workspace section.panel \"เครื่อง POS ที่ลงทะเบียนผู้ใช้ล่\"",
+      "msg": "ends at x 843.7; the right line is 1320",
+      "fix": "end it on the .wrap right line",
+      "widths": [
+        1440
+      ],
+      "from": "layout",
+      "ids": [
+        "edge-right"
+      ],
+      "wheres": [
+        "div.workspace section.panel \"เครื่อง POS ที่ลงทะเบียนผู้ใช้ล่\""
+      ]
+    },
+    {
+      "check": "edge-left",
+      "where": "div.workspace section.panel \"รายละเอียดระบบHost0.0.0.0Port300\"",
+      "msg": "starts at x 867.7; the lines are 120 and the column starts",
+      "fix": "start it on the .wrap left line",
+      "widths": [
+        1440
+      ],
+      "from": "layout",
+      "ids": [
+        "edge-left"
+      ],
+      "wheres": [
+        "div.workspace section.panel \"รายละเอียดระบบHost0.0.0.0Port300\""
+      ]
+    },
+    {
+      "check": "one-sided",
+      "where": "div.workspace div.workspace \"เชื่อมต่อเครื่อง POSใช้ URL และร\"",
+      "msg": "its visuals end at x 843.7, short of the right line 1320",
+      "fix": "let the row reach both .wrap edges",
+      "widths": [
+        1440
+      ],
+      "from": "layout",
+      "ids": [
+        "one-sided"
+      ],
+      "wheres": [
+        "div.workspace div.workspace \"เชื่อมต่อเครื่อง POSใช้ URL และร\""
+      ]
+    },
+    {
+      "check": "screen-short",
+      "where": "section.panel.danger-panel section.panel.danger-panel \"ล้างข้อมูลเซิร์ฟเวอร์ลบข้อมูลร้า\"",
+      "msg": "136px tall; one screen under the nav is 900px",
+      "fix": "make the section one full screen (--h: 1, layout-v4.md section 2)",
+      "widths": [
+        1440,
+        390
+      ],
+      "from": "layout",
+      "ids": [
+        "screen-short"
+      ],
+      "wheres": [
+        "section.panel.danger-panel section.panel.danger-panel \"ล้างข้อมูลเซิร์ฟเวอร์ลบข้อมูลร้า\""
+      ]
+    },
+    {
+      "check": "screen-height",
+      "where": "section.panel.danger-panel section.panel.danger-panel \"ล้างข้อมูลเซิร์ฟเวอร์ลบข้อมูลร้า\"",
+      "msg": "136px, 0.15 screens; a section is exactly one or two (--h)",
+      "fix": "make the section exactly one or two screens (--h: 1 or 2)",
+      "widths": [
+        1440,
+        390
+      ],
+      "from": "layout",
+      "ids": [
+        "screen-height"
+      ],
+      "wheres": [
+        "section.panel.danger-panel section.panel.danger-panel \"ล้างข้อมูลเซิร์ฟเวอร์ลบข้อมูลร้า\""
+      ]
+    },
+    {
+      "check": "hero-fold",
+      "where": "#statsGrid section.stats \"ฐานข้อมูลพร้อมใช้งานร้านค้าร้านท\"",
+      "msg": "starts at y 255, not under the nav",
+      "fix": "the hero fills the first screen alone, its button inside it",
+      "widths": [
+        1440,
+        390
+      ],
+      "from": "layout",
+      "ids": [
+        "hero-fold"
+      ],
+      "wheres": [
+        "#statsGrid section.stats \"ฐานข้อมูลพร้อมใช้งานร้านค้าร้านท\""
+      ]
+    }
+  ],
+  "waived": [],
+  "warnCount": 21,
+  "at": "2026-11-21T06:55:48.853Z"
+}

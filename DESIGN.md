@@ -34,6 +34,7 @@ Use Kanit at 400 for text and 500–600 for labels and headings. Page titles sca
 | Products and suppliers | Keep separate registries with search and focused edit dialogs. The supplier registry filters active and inactive records. Confirm supplier status changes and retain links from past receipts. |
 | Receiving, stock and imports | Keep receiving, lot balances, movement history, count entry, count review and imports on separate pages. Use the shared toolbar, table and field grid. Keep lot and count rows readable using local horizontal scroll. Review quantities and files before submitting. |
 | Reports | Criteria precede results. Export actions sit beside the generated report title. Numeric columns align to the end. |
+| Server admin | Show database, store, registered devices and uptime first. Keep connection credentials in a navy panel, system details beside it, and device rows below. On phones, show each device as labelled rows. Put server reset in a separate red danger panel, accessible only in `/server-admin`, with console-code reauthentication and a typed confirmation in a focused dialog. |
 | Store and hardware settings | Administrators edit store and receipt data in a modal. Printer settings apply per workstation. Preview the receipt before printing and confirm the drawer test. Scanner feedback stays beside the test input. |
 
 ## Interaction and responsive behaviour
